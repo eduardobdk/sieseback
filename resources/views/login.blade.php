@@ -16,21 +16,17 @@
             --complem-beige: #D3C2B4;
             --complem-negro: #000000;
         }
-
         * { box-sizing: border-box; }
-
         body {
             margin: 0; padding: 0; height: 100vh;
             font-family: 'Montserrat', sans-serif;
             overflow: hidden; display: flex;
             align-items: center; justify-content: center;
         }
-
         .contenedor-fondo {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; object-fit: cover;
         }
-
         .login-card {
             position: relative; background: rgba(255, 255, 255, 0.96);
             width: 90%; max-width: 480px; padding: 40px;
@@ -38,48 +34,39 @@
             border-top: 5px solid var(--oficial-rojo);
             backdrop-filter: blur(5px);
         }
-
         .card-header { text-align: center; margin-bottom: 30px; }
         .brand-logo { max-width: 150px; width: 100%; height: auto; margin-bottom: 10px; }
-
         .system-badge {
             background-color: #f4f4f4; color: var(--oficial-rojo);
             padding: 5px 12px; border-radius: 4px; font-size: 0.75rem;
             font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
             border: 1px solid var(--complem-beige);
         }
-
         .input-group { position: relative; margin-bottom: 25px; }
-
         .input-label {
             display: block; font-size: 0.8rem; font-weight: 700;
             color: var(--oficial-rojo); margin-bottom: 8px; text-transform: uppercase;
         }
-
         .custom-input {
             width: 100%; padding: 14px 45px 14px 45px;
             border: 1px solid #ddd; border-radius: 6px;
             background-color: #fdfdfd; font-size: 1rem;
             outline: none; transition: 0.3s; color: var(--complem-negro);
         }
-
         .input-icon {
             position: absolute; left: 15px; bottom: 14px;
             color: var(--oficial-verde); font-size: 1.2rem;
         }
-
         .toggle-password {
             position: absolute; right: 15px; bottom: 14px;
             color: #888; font-size: 1.2rem; cursor: pointer; transition: 0.3s;
         }
         .toggle-password:hover { color: var(--oficial-rojo); }
-
         .custom-input:focus {
             border-color: var(--oficial-rojo);
             background-color: #fff;
             box-shadow: 0 0 0 4px rgba(174, 25, 45, 0.1); 
         }
-
         .btn-submit {
             width: 100%; padding: 16px;
             background: linear-gradient(to right, var(--oficial-rojo), var(--oficial-rosa));
@@ -92,7 +79,6 @@
             transform: translateY(-2px); 
             background: linear-gradient(to right, var(--oficial-rosa), var(--oficial-rojo));
         }
-
         .footer-link { text-align: center; margin-top: 25px; font-size: 0.8rem; }
         .footer-link a { color: #888; text-decoration: none; transition: 0.3s; }
         .footer-link a:hover { color: var(--oficial-verde); }
@@ -114,7 +100,7 @@
             <div class="input-group">
                 <label class="input-label">Usuario</label>
                 <i class="bi bi-person-fill input-icon"></i>
-                <input type="text" name="email" class="custom-input" placeholder="admin@siese.com" required value="{{ old('email') }}">
+                <input type="text" name="email" class="custom-input" placeholder="admin@siese.chiapas.gob.mx" required value="{{ old('email') }}">
             </div>
 
             <div class="input-group">
@@ -141,7 +127,6 @@
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
-
         togglePassword.addEventListener('click', function () {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);

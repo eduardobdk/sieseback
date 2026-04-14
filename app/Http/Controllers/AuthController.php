@@ -9,21 +9,27 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        // 1. Validamos que el usuario mande los datos
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // 2. Intentamos iniciar sesión con la DB
-        if (Auth::attempt($credentials)) {
+        // Inicia sesión con el parámetro 'true' para que no expire (Pase VIP)
+        if (Auth::attempt($credentials, true)) {
             $request->session()->regenerate();
-            return "¡Bienvenido! Usuario y contraseña correctos.";
+            return redirect()->intended('inicio');
         }
 
-        // 3. Si falla, regresamos al login con error
         return back()->withErrors([
             'email' => 'Las credenciales no coinciden con nuestros registros.',
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 }

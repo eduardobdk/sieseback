@@ -1,0 +1,187 @@
+/* ==========================================================
+   1. VARIABLES Y RESETEO GENERAL
+========================================================== */
+:root {
+    --gob-verde: #009887; 
+    --gob-rosa: #C90166;  
+    --gob-guinda: #AE192D; 
+    --gob-azul: #0056b3;
+    --gob-negro: #1A1A1A;
+    --gob-oro: #B8860B;
+}
+
+body { 
+    margin: 0; 
+    display: flex; 
+    min-height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+    background-image: url('../image/Patrones\ 2-03.png'); 
+    background-repeat: repeat;
+    background-size: 250px; 
+    background-attachment: fixed;
+}
+
+/* ==========================================================
+   2. ESTRUCTURA PRINCIPAL (SIDEBAR Y CONTENEDOR)
+========================================================== */
+.sidebar {
+    width: 300px;
+    background-color: var(--gob-negro);
+    border-right: 8px solid var(--gob-guinda);
+    flex-shrink: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1; /* Esto obliga a que ocupe todo el ancho restante */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.navbar-solida {
+    background-color: var(--gob-rosa);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.container-central {
+    padding: 30px;
+    flex: 1; /* Esto obliga a que baje hasta el final de la pantalla */
+    background-color: rgba(255, 255, 255, 0.90); /* Fondo blanco para tapar grecas */
+}
+
+/* ==========================================================
+   3. MENÚ LATERAL (HEADER Y BOTONES)
+========================================================== */
+.sidebar-header {
+    padding: 20px 20px 10px 20px; 
+    background-color: white;
+    text-align: center;
+    position: relative; 
+}
+
+.sidebar-header::after {
+    content: '';
+    position: absolute;
+    bottom: -8px; left: 0;
+    width: 100%; height: 10px; 
+    background-image: url('../image/Patrones\ 1-02.png');
+    background-repeat: repeat-x; background-size: contain;
+    z-index: 10;
+}
+
+.logo-oficial { width: 140px; height: auto; }
+
+.nav-item {
+    display: flex; align-items: center; padding: 12px 25px;
+    text-decoration: none !important; color: white !important; 
+    font-weight: 700; font-size: 0.9rem; border-bottom: 1px solid #333; transition: 0.3s;
+}
+
+.nav-item:hover { background-color: var(--gob-guinda); }
+
+.icon-circle {
+    width: 40px; height: 40px; border-radius: 50%; display: flex; 
+    align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; 
+}
+.icon-circle i { color: white; font-size: 1.2rem; }
+.icon-circle.large { width: 50px; height: 50px; }
+.icon-circle.large i { font-size: 1.8rem; }
+
+/* Colores de iconos */
+.bg-guinda { background-color: var(--gob-guinda); }
+.bg-verde  { background-color: var(--gob-verde); }
+.bg-rosa   { background-color: var(--gob-rosa); }
+.bg-oro    { background-color: var(--gob-oro); }
+.bg-azul   { background-color: var(--gob-azul); }
+
+/* ==========================================================
+   4. TARJETAS (INDEX Y COPLADE)
+========================================================== */
+.grid-tarjetas {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;
+}
+
+.tarjeta-dashboard {
+    background: white; padding: 20px; border-radius: 10px; display: flex; align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 8px solid var(--gob-guinda);
+}
+
+.tarjeta-info h3 { margin: 0; font-size: 1.8rem; color: #333; }
+.tarjeta-info p { margin: 0; font-weight: 700; color: #666; font-size: 0.8rem; text-transform: uppercase; }
+
+.card-bienvenida {
+    background: white; padding: 30px; border-radius: 15px; display: flex; flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-left: 12px solid var(--gob-guinda);
+    position: relative; overflow: hidden; margin-bottom: 30px;
+}
+
+.card-bienvenida::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 15px; 
+    background-image: url('../image/Patrones\ 2-04.png');
+    background-repeat: repeat-x; background-size: contain; opacity: 0.9; 
+}
+
+.card-bienvenida h1, .card-bienvenida h2 { 
+    color: var(--gob-guinda); font-weight: 900; margin: 0 0 10px 0; display: inline-block;
+    position: relative; padding-bottom: 10px;
+}
+
+.card-bienvenida h1 { font-size: 2.8rem; }
+.card-bienvenida h2 { font-size: 1.6rem; }
+
+.card-bienvenida h1::after, .card-bienvenida h2::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 60%; height: 5px; 
+    background-image: url('../image/patron_1.png'); background-repeat: repeat-x; background-size: contain;
+}
+
+/* ==========================================================
+   5. FORMULARIOS Y TABS
+========================================================== */
+.texto-ayuda { color: #666; font-size: 0.95rem; margin-top: -10px; margin-bottom: 15px;}
+.linea-divisoria { border: 0; height: 1px; background: #E0E0E0; margin: 15px 0 25px 0; }
+
+.formulario-gob { display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 10;}
+.grupo-input label { display: block; font-weight: 700; color: #444; margin-bottom: 8px; font-size: 0.95rem; }
+.input-control, .area-texto { width: 100%; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 1rem; box-sizing: border-box; }
+.area-texto { resize: vertical; min-height: 100px; }
+
+.caja-botones { display: flex; justify-content: flex-end; margin-top: 10px; }
+.btn-gob { padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; font-family: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; color: white;}
+.btn-guardar { background-color: var(--gob-verde); }
+
+.tabs-anios { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; position: relative; z-index: 10; }
+.tab-anio { padding: 8px 20px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 20px; font-weight: bold; color: #555; cursor: pointer; transition: 0.3s; }
+.tab-anio.activo { background-color: var(--gob-guinda); color: white; border-color: var(--gob-guinda); }
+.btn-agregar-anio { background-color: white; color: var(--gob-verde); border: 1px dashed var(--gob-verde); }
+
+/* ==========================================================
+   6. LISTAS Y REGISTROS (COPLADE, FAIS, PLANEACION)
+========================================================== */
+.acciones-anio { display: flex; justify-content: flex-end; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #e0e0e0; position: relative; z-index: 10; }
+.btn-nuevo-apartado { background-color: var(--gob-azul); color: white; }
+.titulo-y-acciones { display: flex; align-items: center; gap: 10px; }
+
+.bloque-sesiones { background-color: transparent; position: relative; z-index: 10; margin-bottom: 30px;}
+.encabezado-bloque { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+.encabezado-bloque h3 { margin: 0; font-size: 1.1rem; color: #333; font-weight: bold;}
+.btn-nuevo { background-color: #28a745; color: white;}
+
+.lista-registros { display: flex; flex-direction: column; gap: 12px; }
+.registro-item { display: flex; align-items: center; background: white; border: 1px solid #eee; padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+.registro-img { width: 70px; height: 60px; background-color: #f1f1f1; display: flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #e0e0e0; margin-right: 15px; flex-shrink: 0;}
+.registro-texto { flex-grow: 1; display: flex; flex-direction: column; gap: 4px;}
+.registro-acciones { display: flex; gap: 8px; margin-left: 15px; }
+
+.btn-icono { width: 35px; height: 35px; border: none; border-radius: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; }
+.btn-editar { background-color: #ffc107; color: #000; }
+.btn-eliminar { background-color: #dc3545; color: white; }
+.btn-icono-pequeno { background: none; border: none; color: #dc3545; cursor: pointer; font-size: 1.1rem; padding: 5px; }
