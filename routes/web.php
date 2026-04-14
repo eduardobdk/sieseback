@@ -9,6 +9,8 @@ use App\Http\Controllers\FaisController;
 use App\Http\Controllers\PlaneacionController;
 use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\EvaluacionController;
+use App\Http\Controllers\InformeController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -68,10 +70,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/evaluacion/info', [EvaluacionController::class, 'updateInfo'])->name('evaluacion.info.update');
     Route::post('/evaluacion/documento', [EvaluacionController::class, 'storeDocumento'])->name('evaluacion.documento.store');
     Route::delete('/evaluacion/documento/{id}', [EvaluacionController::class, 'destroyDocumento'])->name('evaluacion.documento.destroy');
-    Route::get('/informes', function () { 
-        return view('informes'); 
-    })->name('panel.informes');
-
+    
+    Route::get('/informes', [InformeController::class, 'index'])->name('panel.informes');
+    Route::post('/informes/info', [InformeController::class, 'updateInfo'])->name('informes.info.update');
+    Route::post('/informes/guardar', [InformeController::class, 'store'])->name('informes.store');
+    Route::delete('/informes/eliminar/{id}', [InformeController::class, 'destroy'])->name('informes.destroy');
     Route::get('/herramientas', function () { 
     // Traemos los documentos separados por sección desde la Base de Datos
     $eval_ped = \App\Models\Documento::where('seccion', 'evaluacion_ped')->get();
