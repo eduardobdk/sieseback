@@ -41,6 +41,36 @@
             letter-spacing: 2px;
         }
 
+        /* Estilos de la nueva navegación */
+        .nav-link-siese {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link-siese:hover {
+            color: var(--guinda-chiapas);
+        }
+
+        .nav-link-siese::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--guinda-chiapas);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link-siese:hover::after {
+            width: 100%;
+        }
+
         /* Overlay de Bienvenida */
         #welcome-overlay {
             position: fixed;
@@ -162,11 +192,20 @@
     </div>
 
     <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-3">
                 <div class="w-1.5 bg-[#8D192F] h-6 rounded-full"></div>
                 <h1 class="text-lg font-extrabold tracking-tight">SIESE <span class="font-normal text-slate-400">| COPLADE</span></h1>
             </div>
+
+            <nav class="flex flex-wrap justify-center items-center gap-x-8 gap-y-2">
+                <a href="#" class="nav-link-siese">Actividades</a>
+                <a href="#" class="nav-link-siese">Evaluación PED-Chiapas</a>
+                <a href="#" class="nav-link-siese">Formatos PRED-Chiapas</a>
+                <a href="#" class="nav-link-siese">Evaluación Programa Sectorial</a>
+                <a href="#" class="nav-link-siese">Visores del CONEVAL</a>
+            </nav>
+
             <a href="index.php" class="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-800 transition-colors">
                 <i class="fas fa-home transition-transform group-hover:-translate-y-0.5"></i> 
                 Inicio
@@ -177,12 +216,14 @@
     <main class="container mx-auto max-w-6xl px-6 py-12">
         
         <header class="mb-12 text-center animate-fade">
-            <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-4 tracking-tighter uppercase">
+            <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-8 tracking-tighter uppercase">
                 COPLADE
             </h2>
-            <p class="text-slate-500 text-sm max-w-2xl mx-auto font-medium leading-relaxed italic">
-                Planeación estratégica para el fortalecimiento del desarrollo integral de Chiapas.
-            </p>
+            <div class="max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
+                    Planeación estratégica para el fortalecimiento del desarrollo integral de Chiapas. El Comité de Planeación para el Desarrollo es el órgano responsable de coordinar los esfuerzos entre los distintos órdenes de gobierno y la sociedad civil para garantizar un crecimiento ordenado y sostenible en la entidad.
+                </p>
+            </div>
         </header>
 
         <section class="animate-fade shadow-2xl rounded-[2.5rem] overflow-hidden border border-slate-200">
@@ -254,7 +295,6 @@
         function selectYear(element) {
             document.querySelectorAll('.year-tab').forEach(tab => tab.classList.remove('active'));
             element.classList.add('active');
-            console.log("Cargando año: " + element.innerText.trim());
         }
     </script>
 </body>

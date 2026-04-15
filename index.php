@@ -37,7 +37,6 @@
 
         .bg-guinda { background-color: var(--guinda-chiapas); }
         .text-guinda { color: var(--guinda-chiapas); }
-        .border-guinda-thin { border-bottom: 4px solid var(--guinda-chiapas); }
         
         .fade-in-up {
             animation: fadeInUp 0.6s ease-out forwards;
@@ -53,9 +52,8 @@
 
     <header class="bg-white border-b border-gray-200 py-6 shadow-sm relative z-30">
         <div class="flex flex-col items-center justify-center text-center">
-            <h1 class="text-5xl font-black text-guinda tracking-tighter mb-0" style="font-family: 'Inter', sans-serif; letter-spacing: -0.05em;">SIESE</h1>
+            <h1 class="text-5xl font-black text-guinda tracking-tighter mb-0" style="letter-spacing: -0.05em;">SIESE</h1>
             <p class="text-[11px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1">Sistema Estatal de Seguimiento y Evaluación</p>
-            
             <div class="w-full h-1.5 mt-4 bg-gradient-to-r from-transparent via-red-800/20 to-transparent"></div>
         </div>
     </header>
@@ -82,12 +80,14 @@
             ];
 
             foreach ($modulos as $index => $m): 
-                $href = 'index.php'; // Por defecto vuelve al inicio
+                $href = 'index.php';
                 if ($m['nombre'] === 'Coplade') $href = 'coplade_info.php';
                 if ($m['nombre'] === 'FAIS') $href = 'fais_info.php';
                 if ($m['nombre'] === 'Planeación') $href = 'planeacion_info.php';
                 if ($m['nombre'] === 'Seguimiento') $href = 'seguimiento_info.php';
                 if ($m['nombre'] === 'Evaluación') $href = 'evaluacion_info.php';
+                if ($m['nombre'] === 'Informes de Gobierno') $href = 'infogob_info.php';
+                if ($m['nombre'] === 'Monitor SITECC') $href = 'sitecc_info.php';
             ?>
                 <a href="<?= $href ?>" class="nav-card glass p-4 rounded-2xl shadow-xl text-center flex flex-col items-center justify-center border border-white/50 h-40 fade-in-up" style="animation-delay: <?= $index * 0.05 ?>s">
                     <div class="w-16 h-16 flex items-center justify-center mb-3">
@@ -106,20 +106,33 @@
     </nav>
 
     <div class="container mx-auto mt-10 px-4">
-        <div class="bg-white rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-6 text-[11px] font-bold text-gray-500 border-l-8 border-guinda uppercase tracking-wider">
-            <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
+        <div class="bg-white rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-x-8 gap-y-4 text-[11px] font-bold text-gray-500 border-l-8 border-guinda uppercase tracking-wider">
+            <a href="actividades_info.php" class="hover:text-guinda transition-colors flex items-center gap-2">
                 <i class="fas fa-cog text-xs text-guinda"></i> Actividades
             </a>
-            <span class="text-gray-200">|</span>
-            <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
+            <span class="text-gray-200 hidden md:block">|</span>
+            
+            <a href="evaluacion_ped_info.php" class="hover:text-guinda transition-colors flex items-center gap-2">
                 <i class="fas fa-book text-xs text-guinda"></i> Evaluación Ped-Chiapas
             </a>
-            <span class="text-gray-200">|</span>
+            <span class="text-gray-200 hidden md:block">|</span>
+            
             <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
                 <i class="fas fa-folder-open text-xs text-guinda"></i> Formatos Ped-Chiapas
             </a>
-            <div class="ml-auto flex items-center bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
-                <input type="text" placeholder="Buscar..." class="bg-transparent border-none focus:ring-0 text-xs w-32">
+            <span class="text-gray-200 hidden md:block">|</span>
+
+            <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
+                <i class="fas fa-chart-pie text-xs text-guinda"></i> Evaluación Programa Sectorial
+            </a>
+            <span class="text-gray-200 hidden md:block">|</span>
+
+            <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
+                <i class="fas fa-eye text-xs text-guinda"></i> Visores del CONEVAL
+            </a>
+
+            <div class="ml-auto flex items-center bg-gray-50 px-4 py-2 rounded-full border border-gray-100 w-full md:w-auto">
+                <input type="text" placeholder="Buscar..." class="bg-transparent border-none focus:ring-0 text-xs w-full md:w-32">
                 <i class="fas fa-search text-gray-400"></i>
             </div>
         </div>

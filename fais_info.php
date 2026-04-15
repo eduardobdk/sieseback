@@ -11,13 +11,11 @@
         
         :root {
             --guinda-chiapas: #8D192F;
-            --guinda-hover: #6b1224;
             --oro-institucional: #B88B4A;
-            --slate-50: #f8fafc;
-            --slate-100: #f1f5f9;
-            --slate-200: #e2e8f0;
-            --slate-800: #1e293b;
+            --gris-evaluacion: #999999;
             --fondo-grecas: #E9E9E9;
+            --slate-800: #1e293b;
+            --slate-200: #e2e8f0;
         }
 
         body { 
@@ -26,7 +24,7 @@
             color: var(--slate-800);
         }
 
-        /* Estilo de Evaluación: Fondo de grecas mejorado */
+        /* Fondo de Grecas Institucional */
         .bg-grecas {
             background-color: var(--fondo-grecas);
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); 
@@ -34,7 +32,7 @@
         }
 
         .header-evaluacion {
-            background-color: #999999;
+            background-color: var(--gris-evaluacion);
             color: white;
             text-align: center;
             padding: 18px;
@@ -44,7 +42,37 @@
             letter-spacing: 2px;
         }
 
-        /* Tarjetas de Comunicaciones Modernas */
+        /* Estilos de la nueva navegación */
+        .nav-link-siese {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link-siese:hover {
+            color: var(--guinda-chiapas);
+        }
+
+        .nav-link-siese::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--guinda-chiapas);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link-siese:hover::after {
+            width: 100%;
+        }
+
+        /* Tarjetas de Comunicaciones */
         .card-comunicacion {
             background: white;
             border-radius: 1rem;
@@ -57,7 +85,7 @@
             transform: translateY(-2px);
         }
 
-        /* Tarjetas de Descarga Estilo Normateca */
+        /* Tarjetas de Descarga */
         .card-descarga {
             background: white;
             border-radius: 1.5rem;
@@ -76,19 +104,14 @@
         .doc-preview {
             width: 70px;
             height: 90px;
-            background: var(--slate-50);
-            border: 1px solid var(--slate-100);
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        .card-descarga:hover .doc-preview {
-            background: #fff1f2;
-            border-color: #fecaca;
         }
         .doc-preview::after {
             content: '';
@@ -105,6 +128,7 @@
             transition: all 0.3s ease;
             position: relative;
             padding: 8px 16px;
+            cursor: pointer;
         }
         .year-tab.active {
             color: var(--guinda-chiapas);
@@ -136,10 +160,7 @@
             border-radius: 8px;
             transition: all 0.3s ease;
         }
-        .btn-descargar:hover {
-            background: var(--guinda-chiapas);
-            transform: scale(1.02);
-        }
+        .btn-descargar:hover { background: var(--guinda-chiapas); transform: scale(1.02); }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
@@ -151,11 +172,20 @@
 <body class="antialiased">
 
     <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-3">
                 <div class="w-1.5 bg-[#8D192F] h-6 rounded-full"></div>
                 <h1 class="text-lg font-extrabold tracking-tight">SIESE <span class="font-normal text-slate-400">| FAIS</span></h1>
             </div>
+
+            <nav class="flex flex-wrap justify-center items-center gap-x-8 gap-y-2">
+                <a href="#" class="nav-link-siese">Actividades</a>
+                <a href="#" class="nav-link-siese">Evaluación PED-Chiapas</a>
+                <a href="#" class="nav-link-siese">Formatos PRED-Chiapas</a>
+                <a href="#" class="nav-link-siese">Evaluación Programa Sectorial</a>
+                <a href="#" class="nav-link-siese">Visores del CONEVAL</a>
+            </nav>
+
             <a href="index.php" class="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-800 transition-colors">
                 <i class="fas fa-home transition-transform group-hover:-translate-y-0.5"></i> 
                 Inicio
@@ -166,13 +196,17 @@
     <main class="container mx-auto max-w-6xl px-6 py-12">
         
         <header class="mb-16 text-center animate-fade">
-            <h2 class="text-3xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase">
-                FAIS / FISE / <span class="text-[#8D192F]">FISMDF</span>
+            <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-8 tracking-tighter uppercase">
+                FAIS / FISE / FISMDF
             </h2>
-            <p class="text-slate-500 text-sm max-w-xl mx-auto font-medium">Información estratégica para la planeación y consulta técnica del Fondo de Aportaciones para la Infraestructura Social.</p>
+            <div class="max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
+                    Información estratégica para la planeación y consulta técnica del Fondo de Aportaciones para la Infraestructura Social. Fortalece el proceso de transparencia y rendición de cuentas, permitiendo conocer el marco jurídico y técnico que rige la ejecución de los recursos federales destinados al estado y sus municipios.
+                </p>
+            </div>
         </header>
 
-        <section class="mb-20 animate-fade" style="animation-delay: 0.1s;">
+        <section class="mb-20 animate-fade">
             <div class="flex items-center gap-3 mb-8">
                 <div class="w-2 h-2 bg-red-800 rounded-full"></div>
                 <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Comunicaciones Relevantes</h3>
@@ -198,7 +232,7 @@
             </div>
         </section>
 
-        <section class="animate-fade shadow-2xl rounded-[2rem] overflow-hidden border border-slate-200" style="animation-delay: 0.2s;">
+        <section class="animate-fade shadow-2xl rounded-[2rem] overflow-hidden border border-slate-200">
             <div class="header-evaluacion">
                 Normateca FAIS
             </div>
@@ -212,12 +246,6 @@
                     <?php endforeach; ?>
                 </div>
 
-                <div class="bg-white/80 rounded-3xl p-8 mb-10 text-center border border-white shadow-sm max-w-4xl mx-auto">
-                    <p class="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
-                        Fortalece el proceso de transparencia y rendición de cuentas, permitiendo conocer el marco jurídico y técnico que rige la ejecución de los recursos federales del estado.
-                    </p>
-                </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="card-descarga">
                         <div class="doc-preview shrink-0">
@@ -226,12 +254,9 @@
                         </div>
                         <div>
                             <h5 class="font-bold text-slate-800 text-xs mb-3 uppercase tracking-tight">Instrumentos Normativos</h5>
-                            <button class="btn-descargar">
-                                <i class="fas fa-download"></i> Descargar
-                            </button>
+                            <button class="btn-descargar"><i class="fas fa-download"></i> Descargar</button>
                         </div>
                     </div>
-
                     <div class="card-descarga">
                         <div class="doc-preview shrink-0">
                             <span class="text-[7px] font-black text-red-800 mb-1">GUÍA</span>
@@ -239,12 +264,9 @@
                         </div>
                         <div>
                             <h5 class="font-bold text-slate-800 text-xs mb-3 uppercase tracking-tight">Capacitación Técnica</h5>
-                            <button class="btn-descargar">
-                                <i class="fas fa-download"></i> Descargar
-                            </button>
+                            <button class="btn-descargar"><i class="fas fa-download"></i> Descargar</button>
                         </div>
                     </div>
-
                     <div class="card-descarga">
                         <div class="doc-preview shrink-0">
                             <span class="text-[7px] font-black text-red-800 mb-1">ZIP</span>
@@ -252,30 +274,28 @@
                         </div>
                         <div>
                             <h5 class="font-bold text-slate-800 text-xs mb-3 uppercase tracking-tight">Manuales y Anexos</h5>
-                            <button class="btn-descargar">
-                                <i class="fas fa-download"></i> Descargar
-                            </button>
+                            <button class="btn-descargar"><i class="fas fa-download"></i> Descargar</button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="bg-white px-8 py-4 border-t border-slate-100 flex justify-center">
+            <div class="bg-white px-8 py-4 border-t border-slate-100 flex justify-between items-center">
                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em]">Sincronizado con el Ciclo Operativo 2026</p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Coat_of_arms_of_Chiapas.svg/1200px-Coat_of_arms_of_Chiapas.svg.png" class="h-6 opacity-20 grayscale" alt="Escudo">
             </div>
         </section>
 
-        <footer class="mt-24 pt-10 border-t border-slate-200 text-center">
-            <p class="text-[10px] font-bold text-slate-300 uppercase tracking-[0.5em]">Secretaría de Hacienda | Chiapas 2026</p>
+        <footer class="mt-20 py-8 text-center text-slate-300 text-[10px] font-bold uppercase tracking-widest border-t border-slate-100">
+            Secretaría de Hacienda | Gobierno de Chiapas 2026
         </footer>
-
     </main>
 
     <script>
         function selectYear(element) {
             document.querySelectorAll('.year-tab').forEach(tab => tab.classList.remove('active'));
             element.classList.add('active');
-            console.log("Filtrando ejercicio fiscal: " + element.innerText.trim());
+            console.log("Filtrando año: " + element.innerText.trim());
         }
     </script>
 </body>
