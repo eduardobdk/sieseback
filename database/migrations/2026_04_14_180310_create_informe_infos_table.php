@@ -11,22 +11,17 @@ class CreateInformeInfosTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
 {
-    Schema::create('informe_infos', function (Blueprint $table) {
-        $table->id();
-        $table->text('descripcion');
-        $table->timestamps();
+    Schema::table('informes_info', function (Blueprint $table) {
+        $table->text('descripcion')->after('id');
     });
 }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('informe_infos');
-    }
+public function down(): void
+{
+    Schema::table('informes_info', function (Blueprint $table) {
+        $table->dropColumn('descripcion');
+    });
+}
 }

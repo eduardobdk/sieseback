@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\InformeInfo;
+use App\Models\InformesInfo;
 use App\Models\Informe;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +11,7 @@ class InformeController extends Controller
 {
     public function index()
     {
-        $info = InformeInfo::firstOrCreate([], [
+        $info = InformesInfo::firstOrCreate([], [
             'descripcion' => 'Documentos que dice el estado que guarda la Administración Pública Estatal...'
         ]);
 
@@ -21,43 +21,72 @@ class InformeController extends Controller
     }
 
     public function updateInfo(Request $request)
-    {
-        $info = InformeInfo::first();
-        $info->descripcion = $request->descripcion;
-        $info->save();
+{
+    // updateOrCreate busca un registro, si no lo halla, lo crea
+    $info = InformesInfo::firstOrCreate([], [
+        'descripcion' => 'Documentos que detallan el estado...'
+    ]);
 
-        return back()->with('success', 'Descripción actualizada.');
-    }
+    $info->descripcion = $request->descripcion;
+    $info->save();
+
+    return back()->with('success', 'Descripción actualizada correctamente.');
+}
 
     public function store(Request $request)
-    {
-        $request->validate(['titulo' => 'required']);
+{
+    // 1. Validar los datos
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'portada' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        'pdf_contexto' => 'nullable|mimes:pdf|max:20480',
+        'pdf_anexo1' => 'nullable|mimes:pdf|max:20480',
+        'pdf_anexo2' => 'nullable|mimes:pdf|max:20480',
+    ]);
 
-        $informe = new Informe();
-        $informe->titulo = $request->titulo;
+    // 2. Crear la instancia del modelo
+    $informe = new Informe();
+    $informe->titulo = $request->titulo;
 
-        // Guardar Portada
-        if ($request->hasFile('portada')) {
-            $nombre = time() . '_portada_' . $request->portada->getClientOriginalName();
-            $request->portada->move(public_path('image/informes'), $nombre);
-            $informe->portada = $nombre;
-        }
+    // --- AQUÍ VA EL CÓDIGO DE LOS ARCHIVOS ---
 
-        // Función rápida para guardar PDFs en la bóveda
-        $guardarPdf = function($archivo, $prefijo) {
-            $nombre = time() . '_' . $prefijo . '_' . str_replace(' ', '_', $archivo->getClientOriginalName());
-            $archivo->storeAs('public/documentos', $nombre);
-            return $nombre;
-        };
-
-        // Guardar los 3 PDFs si existen
-        if ($request->hasFile('pdf_contexto')) $informe->pdf_contexto = $guardarPdf($request->file('pdf_contexto'), 'contexto');
-        if ($request->hasFile('pdf_anexo1')) $informe->pdf_anexo1 = $guardarPdf($request->file('pdf_anexo1'), 'anexo1');
-        if ($request->hasFile('pdf_anexo2')) $informe->pdf_anexo2 = $guardarPdf($request->file('pdf_anexo2'), 'anexo2');
-
-        $informe->save();
-        return back()->with('success', 'Informe creado con éxito.');
+    // Manejo de la Portada (Imagen)
+    if ($request->hasFile('portada')) {
+        $file = $request->file('portada');
+        $name = time() . '_portada_' . $file->getClientOriginalName();
+        $file->move(public_path('image/informes'), $name);
+        $informe->portada = $name;
     }
+
+    // Manejo del PDF Contexto Estatal
+    if ($request->hasFile('pdf_contexto')) {
+        $file = $request->file('pdf_contexto');
+        $name = time() . '_contexto_' . $file->getClientOriginalName();
+        $file->storeAs('documentos', $name, 'public'); // Se guarda en storage/app/public/documentos
+        $informe->pdf_contexto = $name;
+    }
+
+    // Manejo del PDF Anexo 1
+    if ($request->hasFile('pdf_anexo1')) {
+        $file = $request->file('pdf_anexo1');
+        $name = time() . '_anexo1_' . $file->getClientOriginalName();
+        $file->storeAs('documentos', $name, 'public');
+        $informe->pdf_anexo1 = $name;
+    }
+
+    // Manejo del PDF Anexo 2
+    if ($request->hasFile('pdf_anexo2')) {
+        $file = $request->file('pdf_anexo2');
+        $name = time() . '_anexo2_' . $file->getClientOriginalName();
+        $file->storeAs('documentos', $name, 'public');
+        $informe->pdf_anexo2 = $name;
+    }
+
+    // 3. Guardar en la base de datos
+    $informe->save();
+
+    return redirect()->back()->with('success', 'Informe creado correctamente con sus anexos.');
+}
 
     public function destroy($id)
     {

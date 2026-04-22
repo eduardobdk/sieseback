@@ -3,57 +3,69 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Documento;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentoController extends Controller
 {
-    // Función para subir un nuevo archivo
+    /**
+     * Muestra el panel de administración de FAIS
+     */
+    public function index()
+{
+    // 1. Obtenemos las comunicaciones relevantes
+    $comunicaciones = \App\Models\Documento::where('seccion', 'fais_comunicaciones')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // 2. Obtenemos la normateca y la agrupamos por año
+    // Usamos sortKeys() para que los años aparezcan de menor a mayor (2025, 2026...)
+    $normatecaPorAnio = \App\Models\Documento::where('seccion', 'fais_normateca')
+        ->get()
+        ->groupBy('anio')
+        ->sortKeys(); 
+
+    // 3. Enviamos AMBAS variables a la vista
+    return view('fais', compact('comunicaciones', 'normatecaPorAnio'));
+}
+
     public function store(Request $request)
     {
         $request->validate([
-            'titulo' => 'required',
-            'seccion' => 'required',
-            'archivo' => 'required|file|max:10240', // Máximo 10MB
+            'titulo'    => 'required|string|max:255',
+            'archivo'   => 'required|mimes:pdf|max:10000',
+            'seccion'   => 'required'
         ]);
 
-        $documento = new Documento();
-        $documento->titulo = $request->titulo;
-        $documento->seccion = $request->seccion;
-
-        // Lógica para guardar el archivo
         if ($request->hasFile('archivo')) {
-            $file = $request->file('archivo');
-            $extension = $file->getClientOriginalExtension();
-            
-            // Creamos un nombre único: tiempo_nombreoriginal.pdf
-            $nombreArchivo = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-            
-            // Lo guardamos en la bóveda (storage/app/public/documentos)
-            $file->storeAs('public/documentos', $nombreArchivo);
-
-            $documento->archivo = $nombreArchivo;
-            $documento->extension = strtolower($extension);
+            $archivo = $request->file('archivo');
+            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+            $archivo->storeAs('public/documentos', $nombreArchivo);
         }
 
-        $documento->save();
+        DB::table('documentos')->insert([
+            'titulo'    => $request->titulo,
+            'archivo'   => $nombreArchivo,
+            'extension' => $archivo->getClientOriginalExtension(),
+            'seccion'   => $request->seccion,
+            'anio'      => $request->anio,      // Se guarda el año para el filtrado
+            'categoria' => $request->categoria, // Se guarda la categoría para el grupo
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]);
 
-        return back()->with('success', 'Documento subido correctamente a la sección: ' . $request->seccion);
+        return back()->with('success', 'Documento guardado correctamente.');
     }
 
-    // Función para eliminar un archivo
     public function destroy($id)
     {
-        $documento = Documento::findOrFail($id);
+        $documento = DB::table('documentos')->where('id', $id)->first();
         
-        // Borramos el archivo físico del disco duro
-        if (Storage::exists('public/documentos/' . $documento->archivo)) {
+        if ($documento) {
             Storage::delete('public/documentos/' . $documento->archivo);
+            DB::table('documentos')->where('id', $id)->delete();
         }
-        
-        // Borramos el registro de la base de datos
-        $documento->delete();
 
-        return back()->with('success', 'Documento eliminado correctamente.');
+        return back()->with('success', 'Documento eliminado.');
     }
 }

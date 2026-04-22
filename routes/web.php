@@ -53,14 +53,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/coplade/sesion/{id}', [CopladeController::class, 'destroySesion'])->name('coplade.sesion.destroy');
 
 
-   Route::get('/fais', [FaisController::class, 'index'])->name('panel.fais');
+   Route::get('/fais', [DocumentoController::class, 'index'])->name('panel.fais');
 
     Route::get('/planeacion', [PlaneacionController::class, 'index'])->name('panel.planeacion');
     Route::post('/planeacion/info', [PlaneacionController::class, 'updateInfo'])->name('planeacion.info.update');
     Route::post('/planeacion/documento', [PlaneacionController::class, 'storeDocumento'])->name('planeacion.documento.store');
     Route::delete('/planeacion/documento/{id}', [PlaneacionController::class, 'destroyDocumento'])->name('planeacion.documento.destroy');
 
-   Route::get('/seguimiento', [SeguimientoController::class, 'index'])->name('panel.seguimiento');
+    Route::get('/seguimiento', [SeguimientoController::class, 'index'])->name('seguimiento.index');
     Route::post('/seguimiento/info', [SeguimientoController::class, 'updateInfo'])->name('seguimiento.info.update');
     Route::post('/seguimiento/registro', [SeguimientoController::class, 'storeRegistro'])->name('seguimiento.registro.store');
     // Para borrar reciclamos la de DocumentoController que ya existe:
@@ -72,8 +72,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/evaluacion/documento/{id}', [EvaluacionController::class, 'destroyDocumento'])->name('evaluacion.documento.destroy');
     
     Route::get('/informes', [InformeController::class, 'index'])->name('panel.informes');
+    Route::get('/informes/info', [InformeController::class, 'index']);
+    Route::post('/informes/store', [InformeController::class, 'store'])->name('informes.store');
     Route::post('/informes/info', [InformeController::class, 'updateInfo'])->name('informes.info.update');
-    Route::post('/informes/guardar', [InformeController::class, 'store'])->name('informes.store');
     Route::delete('/informes/eliminar/{id}', [InformeController::class, 'destroy'])->name('informes.destroy');
     Route::get('/herramientas', function () { 
     // Traemos los documentos separados por sección desde la Base de Datos

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEvaluacionDocumentosTable extends Migration
+class CreateInformesInfoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateEvaluacionDocumentosTable extends Migration
      */
     public function up(): void
 {
-    Schema::create('evaluacion_documentos', function (Blueprint $table) {
+    Schema::create('informes_info', function (Blueprint $table) {
         $table->id();
-        $table->string('titulo');
-        $table->string('portada')->nullable();
-        $table->string('archivo');
+        $table->text('descripcion'); // <--- Verifica que esta línea esté aquí
         $table->timestamps();
     });
 }
@@ -29,6 +27,6 @@ class CreateEvaluacionDocumentosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('evaluacion_documentos');
+        Schema::dropIfExists('informes_info');
     }
 }

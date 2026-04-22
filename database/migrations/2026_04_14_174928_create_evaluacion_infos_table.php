@@ -11,11 +11,11 @@ class CreateEvaluacionInfosTable extends Migration
      *
      * @return void
      */
-    public function up()
+public function up(): void
 {
     Schema::create('evaluacion_infos', function (Blueprint $table) {
         $table->id();
-        $table->text('descripcion');
+        $table->text('descripcion'); // Verifica que esta línea exista
         $table->timestamps();
     });
 }

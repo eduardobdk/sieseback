@@ -1,3 +1,17 @@
+<?php
+// Conexión con el núcleo de Laravel (3 niveles arriba)
+require __DIR__.'/../../vendor/autoload.php';
+$app = require_once __DIR__.'/../../bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(Illuminate\Http\Request::capture());
+
+use App\Models\EvaluacionInfo;
+use App\Models\EvaluacionDocumento;
+
+// Obtenemos los datos de la BD
+$info = EvaluacionInfo::first();
+$documentos = EvaluacionDocumento::latest()->get();
+?>
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
@@ -24,14 +38,12 @@
             color: var(--slate-800);
         }
 
-        /* Fondo de Grecas Institucional */
         .bg-grecas {
             background-color: var(--fondo-grecas);
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); 
             background-blend-mode: overlay;
         }
 
-        /* Estilos de navegación */
         .nav-link-siese {
             font-size: 11px;
             font-weight: 700;
@@ -42,9 +54,7 @@
             position: relative;
         }
 
-        .nav-link-siese:hover {
-            color: var(--guinda-chiapas);
-        }
+        .nav-link-siese:hover { color: var(--guinda-chiapas); }
 
         .nav-link-siese::after {
             content: '';
@@ -57,11 +67,8 @@
             transition: width 0.3s ease;
         }
 
-        .nav-link-siese:hover::after {
-            width: 100%;
-        }
+        .nav-link-siese:hover::after { width: 100%; }
 
-        /* Tarjetas de Evaluación */
         .card-modern {
             background: white;
             border: 1px solid var(--slate-200);
@@ -123,54 +130,40 @@
             </h2>
             <div class="max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
-                    Valorar y orientar la gestión pública; fortalece el proceso de toma de decisiones para avanzar con certidumbre en la atención de políticas públicas y su implementación de programas. Permite conocer los resultados obtenidos en el corto, mediano y largo plazo, abonando al proceso de transparencia y rendición de cuentas.
+                    <?= $info ? e($info->descripcion) : 'Valorar y orientar la gestión pública; fortalece el proceso de toma de decisiones para avanzar con certidumbre en la atención de políticas públicas y su implementación de programas.' ?>
                 </p>
             </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade" style="animation-delay: 0.2s;">
             
+            <?php foreach($documentos as $doc): ?>
             <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white">
                 <div class="flex items-start justify-between mb-8">
                     <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center">
                         <i class="fas fa-file-signature text-3xl text-red-800"></i>
                     </div>
-                    <span class="text-[9px] font-bold px-3 py-1 bg-red-50 text-red-800 rounded-full uppercase tracking-widest">Plan Estatal</span>
+                    <span class="text-[9px] font-bold px-3 py-1 bg-red-50 text-red-800 rounded-full uppercase tracking-widest">Documento</span>
                 </div>
                 
-                <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight">PED-Chiapas 2025-2030</h3>
+                <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight"><?= e($doc->titulo) ?></h3>
                 <p class="text-[11px] text-slate-400 leading-relaxed mb-8 flex-grow font-medium uppercase tracking-tight">
-                    Instrumento de evaluación del Plan Estatal de Desarrollo enfocado en el cumplimiento de los ejes estratégicos institucionales.
+                    Documento oficial disponible para su consulta y descarga.
                 </p>
 
                 <div class="bg-grecas rounded-2xl p-6 text-center border border-slate-100">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest italic">Información en proceso de carga</p>
-                    <button class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest flex items-center justify-center gap-3">
+                    <a href="<?= '/storage/documentos/'.$doc->archivo ?>" target="_blank" class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest flex items-center justify-center gap-3 decoration-none">
                         <i class="fas fa-file-pdf"></i> Descargar Documento
-                    </button>
+                    </a>
                 </div>
             </article>
+            <?php endforeach; ?>
 
-            <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white">
-                <div class="flex items-start justify-between mb-8">
-                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-layer-group text-3xl text-red-800"></i>
-                    </div>
-                    <span class="text-[9px] font-bold px-3 py-1 bg-slate-100 text-slate-500 rounded-full uppercase tracking-widest">Sectorial</span>
-                </div>
-                
-                <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight">Programas Sectoriales</h3>
-                <p class="text-[11px] text-slate-400 leading-relaxed mb-8 flex-grow font-medium uppercase tracking-tight">
-                    Resultados obtenidos en los programas por sector, evaluando el impacto directo en la población y la eficiencia del gasto público.
-                </p>
-
-                <div class="bg-grecas rounded-2xl p-6 text-center border border-slate-100">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest italic">Esperando archivos del sistema</p>
-                    <button class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest flex items-center justify-center gap-3">
-                        <i class="fas fa-chart-pie"></i> Ver Reporte Detallado
-                    </button>
-                </div>
-            </article>
+            <?php if($documentos->isEmpty()): ?>
+                 <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white opacity-50">
+                    <p class="text-center text-slate-400 italic">No hay documentos cargados aún.</p>
+                 </article>
+            <?php endif; ?>
 
         </div>
 

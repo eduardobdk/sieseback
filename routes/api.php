@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes - SIESE / FAIS
 |--------------------------------------------------------------------------
 */
 
@@ -24,20 +24,18 @@ Route::get('/coplade-data', function () {
     ]);
 });
 
-// --- RUTA FAIS (NUEVA) ---
+// --- RUTA FAIS (CORREGIDA: MENOR A MAYOR) ---
 Route::get('/fais-data', function () {
-    // 1. Obtenemos las comunicaciones (Sección 1)
-    // Filtramos por la sección que definiste en tu blade: 'fais_comunicaciones'
+    // Comunicaciones Relevantes
     $comunicaciones = DB::table('documentos')
                         ->where('seccion', 'fais_comunicaciones')
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-    // 2. Obtenemos la Normateca (Sección 2)
-    // Agrupamos primero por 'anio' y luego por 'categoria'
+    // Normateca con orden Ascendente por Año
     $normateca = DB::table('documentos')
                     ->where('seccion', 'fais_normateca')
-                    ->orderBy('anio', 'desc')
+                    ->orderBy('anio', 'asc') 
                     ->get()
                     ->groupBy(['anio', 'categoria']);
 

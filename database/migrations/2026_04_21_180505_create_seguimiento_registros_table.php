@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEvaluacionDocumentosTable extends Migration
+class CreateSeguimientoRegistrosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateEvaluacionDocumentosTable extends Migration
      */
     public function up(): void
 {
-    Schema::create('evaluacion_documentos', function (Blueprint $table) {
+    Schema::create('seguimiento_registros', function (Blueprint $table) {
         $table->id();
-        $table->string('titulo');
-        $table->string('portada')->nullable();
-        $table->string('archivo');
+        $table->string('titulo');    // Falta esta columna según el error
+        $table->string('extension'); // 'pdf' o 'link'
+        $table->text('archivo');     // Ruta del PDF o la URL
         $table->timestamps();
     });
 }
@@ -29,6 +29,6 @@ class CreateEvaluacionDocumentosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('evaluacion_documentos');
+        Schema::dropIfExists('seguimiento_registros');
     }
 }

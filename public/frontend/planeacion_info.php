@@ -1,3 +1,22 @@
+<?php
+/**
+ * Conexión híbrida: Carga el entorno de Laravel para acceder a la BD
+ * desde un archivo fuera de la estructura de views.
+ */
+require __DIR__.'/../../vendor/autoload.php';
+$app = require_once __DIR__.'/../../bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(Illuminate\Http\Request::capture());
+
+// Importamos los modelos necesarios
+use App\Models\PlaneacionInfo;
+use App\Models\PlaneacionDocumento;
+
+// Obtenemos los datos que el admin modificó
+$info = PlaneacionInfo::first() ?? (object)['descripcion' => 'Información no disponible.'];
+$documentos = PlaneacionDocumento::orderBy('created_at', 'desc')->get();
+?>
+
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
@@ -24,25 +43,12 @@
             color: var(--slate-800);
         }
 
-        /* Fondo de Grecas Institucional */
         .bg-grecas {
             background-color: var(--fondo-grecas);
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); 
             background-blend-mode: overlay;
         }
 
-        .header-institucional {
-            background-color: var(--gris-evaluacion);
-            color: white;
-            text-align: center;
-            padding: 18px;
-            font-size: 20px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Estilos de la nueva navegación */
         .nav-link-siese {
             font-size: 11px;
             font-weight: 700;
@@ -53,26 +59,8 @@
             position: relative;
         }
 
-        .nav-link-siese:hover {
-            color: var(--guinda-chiapas);
-        }
+        .nav-link-siese:hover { color: var(--guinda-chiapas); }
 
-        .nav-link-siese::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--guinda-chiapas);
-            transition: width 0.3s ease;
-        }
-
-        .nav-link-siese:hover::after {
-            width: 100%;
-        }
-
-        /* Tarjetas de Planeación Modernas */
         .card-modern {
             background: white;
             border: 1px solid var(--slate-200);
@@ -88,6 +76,11 @@
         .btn-gov {
             background-color: var(--slate-800);
             transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
 
         .btn-gov:hover {
@@ -134,7 +127,7 @@
             </h2>
             <div class="max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
                 <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
-                    El <strong>Plan Estatal de Desarrollo (PED)</strong> es un documento rector del Sistema Estatal de Planeación Democrática, que define los objetivos, estrategias y prioridades para atender las demandas del pueblo. Además, facilita la coordinación de las iniciativas gubernamentales para fomentar el crecimiento transformador y humanista de Chiapas.
+                    <?php echo nl2br(htmlspecialchars($info->descripcion)); ?>
                 </p>
                 <div class="pt-6 border-t border-slate-100">
                     <p class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] italic">
@@ -146,85 +139,46 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade" style="animation-delay: 0.2s;">
             
-            <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white">
-                <div class="flex items-start justify-between mb-8">
-                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-file-invoice text-3xl text-red-800"></i>
+            <?php if($documentos->isEmpty()): ?>
+                <div class="col-span-full text-center py-10 text-slate-400">
+                    <i class="fas fa-folder-open text-4xl mb-3"></i>
+                    <p>No hay documentos disponibles en este momento.</p>
+                </div>
+            <?php else: ?>
+                <?php foreach($documentos as $doc): ?>
+                <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white">
+                    <div class="flex items-start justify-between mb-8">
+                        <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-100">
+                            <?php if($doc->portada): ?>
+                                <img src="../image/planeacion/<?php echo $doc->portada; ?>" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <i class="fas fa-file-invoice text-3xl text-red-800"></i>
+                            <?php endif; ?>
+                        </div>
+                        <span class="text-[9px] font-bold px-3 py-1 bg-red-50 text-red-800 rounded-full uppercase tracking-widest">Documento Digital</span>
                     </div>
-                    <span class="text-[9px] font-bold px-3 py-1 bg-red-50 text-red-800 rounded-full uppercase tracking-widest">Documento Rector</span>
-                </div>
-                
-                <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight">Plan Estatal de Desarrollo</h3>
-                <p class="text-[11px] text-slate-400 leading-relaxed mb-8 flex-grow font-medium uppercase tracking-tight">
-                    Instrumento base 2025 - 2030 que define el rumbo de la administración pública estatal.
-                </p>
+                    
+                    <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight">
+                        <?php echo htmlspecialchars($doc->titulo); ?>
+                    </h3>
+                    <p class="text-[11px] text-slate-400 leading-relaxed mb-8 flex-grow font-medium uppercase tracking-tight">
+                        Instrumento oficial disponible para la gestión y consulta ciudadana.
+                    </p>
 
-                <div class="bg-grecas rounded-2xl p-6 text-center border border-slate-100">
-                    <button class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest flex items-center justify-center gap-3">
-                        <i class="fas fa-download"></i> Descargar Plan
-                    </button>
-                </div>
-            </article>
-
-            <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white">
-                <div class="flex items-start justify-between mb-8">
-                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-sitemap text-3xl text-blue-800"></i>
+                    <div class="bg-grecas rounded-2xl p-6 text-center border border-slate-100">
+                        <?php if($doc->archivo): ?>
+                            <a href="../storage/documentos/<?php echo $doc->archivo; ?>" target="_blank" class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest">
+                                <i class="fas fa-download"></i> Descargar Archivo
+                            </a>
+                        <?php else: ?>
+                            <button disabled class="w-full bg-slate-200 text-slate-400 text-[11px] font-bold py-4 rounded-xl uppercase tracking-widest cursor-not-allowed">
+                                <i class="fas fa-lock"></i> No Adjunto
+                            </button>
+                        <?php endif; ?>
                     </div>
-                    <span class="text-[9px] font-bold px-3 py-1 bg-blue-50 text-blue-800 rounded-full uppercase tracking-widest">Estrategias</span>
-                </div>
-                
-                <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight">Programas Sectoriales</h3>
-                <p class="text-[11px] text-slate-400 leading-relaxed mb-8 flex-grow font-medium uppercase tracking-tight">
-                    Articulación de metas y objetivos específicos por cada sector del gobierno estatal.
-                </p>
-
-                <div class="bg-grecas rounded-2xl p-6 text-center border border-slate-100">
-                    <button class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest flex items-center justify-center gap-3">
-                        <i class="fas fa-eye"></i> Ver Documentos
-                    </button>
-                </div>
-            </article>
-
-            <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white">
-                <div class="flex items-start justify-between mb-8">
-                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-map-marked-alt text-3xl text-purple-700"></i>
-                    </div>
-                    <span class="text-[9px] font-bold px-3 py-1 bg-purple-50 text-purple-700 rounded-full uppercase tracking-widest">Regionalización</span>
-                </div>
-                
-                <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight">Programas Regionales</h3>
-                <p class="text-[11px] text-slate-400 leading-relaxed mb-8 flex-grow font-medium uppercase tracking-tight">
-                    Planificación enfocada en el desarrollo equilibrado de las zonas geográficas.
-                </p>
-
-                <div class="bg-grecas rounded-2xl p-6 text-center border border-slate-100">
-                    <button class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest flex items-center justify-center gap-3">
-                        <i class="fas fa-download"></i> Descargar Regional
-                    </button>
-                </div>
-            </article>
-
-            <article class="card-modern rounded-[2rem] p-10 flex flex-col h-full bg-white">
-                <div class="flex items-start justify-between mb-8">
-                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-balance-scale text-3xl text-slate-600"></i>
-                    </div>
-                    <span class="text-[9px] font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full uppercase tracking-widest">Normatividad</span>
-                </div>
-                
-                <h3 class="text-xl font-bold text-slate-800 mb-2 uppercase tracking-tight">Marco Jurídico</h3>
-                <p class="text-[11px] text-slate-400 leading-relaxed mb-8 flex-grow font-medium uppercase tracking-tight">
-                    Leyes y lineamientos técnicos que rigen la planeación en el estado de Chiapas.
-                </p>
-
-                <div class="bg-grecas rounded-2xl p-6 text-center border border-slate-100">
-                    <button class="btn-gov w-full text-white text-[11px] font-bold py-4 rounded-xl shadow-lg uppercase tracking-widest flex items-center justify-center gap-3">
-                        <i class="fas fa-book"></i> Consultar Normas
-                    </button>
-                </div>
-            </article>
+                </article>
+                <?php endforeach; ?>
+            <?php endif; ?>
 
         </div>
 

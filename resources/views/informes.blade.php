@@ -15,8 +15,8 @@
         <form action="{{ route('informes.info.update') }}" method="POST" class="formulario-gob">
             @csrf
             <div class="grupo-input">
-                <label>Contenido del bloque:</label>
-                <textarea name="descripcion" class="input-form area-texto" rows="5" required>{{ $info->descripcion }}</textarea>
+                <label>Contenido del bloque (Texto de introducción):</label>
+                <textarea name="descripcion" class="input-form area-texto" rows="5" required>{{ $info->descripcion ?? '' }}</textarea>
             </div>
             <div class="caja-botones">
                 <button type="submit" class="btn-gob btn-guardar"><i class="bi bi-floppy"></i> Guardar Texto</button>
@@ -47,15 +47,15 @@
 
             <div style="display: flex; gap: 15px; flex-wrap: wrap; background: #fff; padding: 15px; border-radius: 5px; border: 1px dashed #ccc;">
                 <div class="grupo-input" style="flex: 1; min-width: 200px; margin: 0;">
-                    <label style="font-size: 0.85rem;"><i class="bi bi-file-pdf text-danger"></i> PDF Contexto Estatal:</label>
+                    <label style="font-size: 0.85rem;"><i class="bi bi-file-pdf text-danger"></i> Contexto Estatal:</label>
                     <input type="file" name="pdf_contexto" class="input-control" accept=".pdf">
                 </div>
                 <div class="grupo-input" style="flex: 1; min-width: 200px; margin: 0;">
-                    <label style="font-size: 0.85rem;"><i class="bi bi-file-pdf text-danger"></i> PDF Anexo 1:</label>
+                    <label style="font-size: 0.85rem;"><i class="bi bi-file-pdf text-danger"></i> Anexo 1:</label>
                     <input type="file" name="pdf_anexo1" class="input-control" accept=".pdf">
                 </div>
                 <div class="grupo-input" style="flex: 1; min-width: 200px; margin: 0;">
-                    <label style="font-size: 0.85rem;"><i class="bi bi-file-pdf text-danger"></i> PDF Anexo 2:</label>
+                    <label style="font-size: 0.85rem;"><i class="bi bi-file-pdf text-danger"></i> Anexo 2:</label>
                     <input type="file" name="pdf_anexo2" class="input-control" accept=".pdf">
                 </div>
             </div>
@@ -79,17 +79,13 @@
                         
                         <div style="display: flex; gap: 10px; font-size: 0.8rem;">
                             @if($informe->pdf_contexto)
-                                <a href="{{ asset('storage/documentos/'.$informe->pdf_contexto) }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Contexto Estatal</a>
+                                <a href="{{ asset('storage/documentos/'.$informe->pdf_contexto) }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Contexto</a>
                             @endif
                             @if($informe->pdf_anexo1)
                                 <a href="{{ asset('storage/documentos/'.$informe->pdf_anexo1) }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 1</a>
                             @endif
                             @if($informe->pdf_anexo2)
                                 <a href="{{ asset('storage/documentos/'.$informe->pdf_anexo2) }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 2</a>
-                            @endif
-                            
-                            @if(!$informe->pdf_contexto && !$informe->pdf_anexo1 && !$informe->pdf_anexo2)
-                                <span style="color: #888;">Sin documentos adjuntos</span>
                             @endif
                         </div>
                     </div>

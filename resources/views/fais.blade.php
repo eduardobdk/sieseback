@@ -91,12 +91,13 @@
 
         @if($normatecaPorAnio->count() > 0)
             <div class="tabs-anios">
-                @foreach($normatecaPorAnio as $anio => $documentos)
+                {{-- Ordenamos las llaves (años) de menor a mayor antes de iterar --}}
+                @foreach($normatecaPorAnio->sortKeys() as $anio => $documentos)
                     <button class="tab-anio {{ $loop->first ? 'activo' : '' }}" onclick="abrirAnio(event, 'anio-{{ $anio }}')">{{ $anio }}</button>
                 @endforeach
             </div>
 
-            @foreach($normatecaPorAnio as $anio => $documentos)
+            @foreach($normatecaPorAnio->sortKeys() as $anio => $documentos)
                 <div id="anio-{{ $anio }}" class="contenido-anio {{ $loop->first ? 'activo' : '' }}">
                     
                     @foreach($documentos->groupBy('categoria') as $categoria => $items)

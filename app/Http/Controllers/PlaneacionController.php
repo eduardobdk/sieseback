@@ -11,6 +11,7 @@ class PlaneacionController extends Controller
 {
     public function index()
     {
+        // Asegura que exista el registro base para evitar errores en la vista
         $info = PlaneacionInfo::firstOrCreate([], [
             'descripcion' => 'El Plan Estatal de Desarrollo (PED) es un documento rector...'
         ]);
@@ -20,37 +21,41 @@ class PlaneacionController extends Controller
         return view('planeacion', compact('info', 'documentos'));
     }
 
-    public function updateInfo(Request $request)
-    {
+    public function updateInfo(Request $request) {
+        $request->validate([
+            'descripcion' => 'required|string'
+        ]);
+
         $info = PlaneacionInfo::first();
         $info->descripcion = $request->descripcion;
         $info->save();
 
-        return back()->with('success', 'Texto introductorio actualizado.');
+        return redirect()->back()->with('success', 'Información actualizada correctamente');
     }
 
     public function storeDocumento(Request $request)
     {
         $request->validate([
-            'titulo' => 'required',
-            'portada' => 'nullable|image',
-            'archivo' => 'nullable|file|mimes:pdf'
+            'titulo' => 'required|max:255',
+            'portada' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Limitar a 2MB
+            'archivo' => 'nullable|file|mimes:pdf|max:10240' // Limitar a 10MB
         ]);
 
         $doc = new PlaneacionDocumento();
         $doc->titulo = $request->titulo;
 
-        // 1. Guardar la imagen (Portada) en la carpeta public/image/planeacion
+        // 1. Guardar Portada (Acceso público directo)
         if ($request->hasFile('portada')) {
-            $nombrePortada = time() . '_portada_' . $request->portada->getClientOriginalName();
+            $nombrePortada = time() . '_portada_' . bin2hex(random_bytes(4)) . '.' . $request->portada->getClientOriginalExtension();
             $request->portada->move(public_path('image/planeacion'), $nombrePortada);
             $doc->portada = $nombrePortada;
         }
 
-        // 2. Guardar el PDF en la bóveda secreta storage/app/public/documentos
+        // 2. Guardar PDF (Storage Link)
         if ($request->hasFile('archivo')) {
             $file = $request->file('archivo');
-            $nombreArchivo = time() . '_pdf_' . str_replace(' ', '_', $file->getClientOriginalName());
+            // Limpiamos el nombre de caracteres especiales
+            $nombreArchivo = time() . '_pdf_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $file->getClientOriginalName());
             $file->storeAs('public/documentos', $nombreArchivo);
             $doc->archivo = $nombreArchivo;
         }
@@ -63,12 +68,13 @@ class PlaneacionController extends Controller
     {
         $doc = PlaneacionDocumento::findOrFail($id);
         
-        // Borrar portada física
-        if ($doc->portada && file_exists(public_path('image/planeacion/' . $doc->portada))) {
-            unlink(public_path('image/planeacion/' . $doc->portada));
+        // Borrar imagen física
+        $rutaPortada = public_path('image/planeacion/' . $doc->portada);
+        if ($doc->portada && file_exists($rutaPortada)) {
+            unlink($rutaPortada);
         }
         
-        // Borrar PDF físico
+        // Borrar PDF físico del storage
         if ($doc->archivo && Storage::exists('public/documentos/' . $doc->archivo)) {
             Storage::delete('public/documentos/' . $doc->archivo);
         }

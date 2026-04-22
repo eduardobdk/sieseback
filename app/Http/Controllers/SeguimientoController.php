@@ -4,59 +4,51 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SeguimientoInfo;
-use App\Models\Documento; // El Gestor Universal
+use App\Models\SeguimientoRegistro;
+use Illuminate\Support\Facades\Storage;
 
 class SeguimientoController extends Controller
 {
     public function index()
-    {
-        // 1. Traer la descripción (o crearla por defecto)
-        $info = SeguimientoInfo::firstOrCreate([], [
-            'descripcion' => 'Proceso que comprende la recopilación y análisis de datos...'
-        ]);
+{
+    // Obtiene el primer registro o crea uno por defecto si no existe
+    $info = \App\Models\SeguimientoInfo::firstOrCreate([], [
+        'descripcion' => 'Descripción inicial de seguimiento...'
+    ]);
 
-        // 2. Traer los registros de seguimiento (PDFs o Links)
-        $registros = Documento::where('seccion', 'seguimiento')->latest()->get();
+    $registros = \App\Models\SeguimientoRegistro::latest()->get();
 
-        return view('seguimiento', compact('info', 'registros'));
-    }
+    // Es vital que el nombre en compact coincida con las variables del blade
+    return view('seguimiento', compact('info', 'registros'));
+}
 
     public function updateInfo(Request $request)
     {
         $info = SeguimientoInfo::first();
-        $info->descripcion = $request->descripcion;
-        $info->save();
-
+        $info->update(['descripcion' => $request->descripcion]);
         return back()->with('success', 'Descripción de seguimiento actualizada.');
     }
 
-    // Usamos esta función para guardar ya sea un PDF o un simple Link
     public function storeRegistro(Request $request)
     {
         $request->validate([
             'titulo' => 'required',
-            'tipo' => 'required|in:pdf,link',
-            'archivo' => 'required_if:tipo,pdf|file|mimes:pdf',
-            'url' => 'required_if:tipo,link|url'
+            'tipo' => 'required'
         ]);
 
-        $doc = new Documento();
-        $doc->titulo = $request->titulo;
-        $doc->seccion = 'seguimiento';
+        $reg = new SeguimientoRegistro();
+        $reg->titulo = $request->titulo;
+        $reg->extension = $request->tipo; // Guardamos 'pdf' o 'link'
 
-        if ($request->tipo == 'pdf') {
-            $file = $request->file('archivo');
-            $nombreArchivo = time() . '_seguimiento_' . str_replace(' ', '_', $file->getClientOriginalName());
-            $file->storeAs('public/documentos', $nombreArchivo);
-            
-            $doc->archivo = $nombreArchivo;
-            $doc->extension = 'pdf'; // Lo usamos para saber el icono
+        if ($request->tipo === 'pdf' && $request->hasFile('archivo')) {
+            $nombre = time() . '_' . $request->file('archivo')->getClientOriginalName();
+            $request->file('archivo')->storeAs('public/documentos', $nombre);
+            $reg->archivo = $nombre;
         } else {
-            $doc->archivo = $request->url; // Si es link, guardamos la URL en la columna archivo
-            $doc->extension = 'link'; // Lo usamos para saber el icono
+            $reg->archivo = $request->url; // Si es link, guardamos la URL directamente
         }
 
-        $doc->save();
-        return back()->with('success', 'Registro agregado correctamente.');
+        $reg->save();
+        return back()->with('success', 'Registro de seguimiento creado.');
     }
 }

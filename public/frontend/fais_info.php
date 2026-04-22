@@ -157,10 +157,10 @@
             <div class="header-evaluacion">Normateca FAIS</div>
             <div class="bg-grecas p-6 md:p-12">
                 <div id="tabs-anios" class="flex flex-wrap justify-center gap-4 mb-10 bg-white/50 backdrop-blur-sm p-2 rounded-2xl w-fit mx-auto border border-white">
-                    </div>
+                </div>
 
                 <div id="contenedor-normateca" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    </div>
+                </div>
             </div>
             <div class="bg-white px-8 py-4 border-t border-slate-100 flex justify-between items-center">
                 <p id="label-ciclo" class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em]">Sincronizando datos...</p>
@@ -178,7 +178,7 @@
 
         async function fetchFaisData() {
             try {
-                // Ajusta esta URL a tu endpoint real de Laravel
+                // Asegúrate de que esta URL coincida con tu servidor local
                 const response = await fetch('http://localhost:8000/api/fais-data');
                 datosFais = await response.json();
                 
@@ -191,7 +191,7 @@
 
         function renderComunicaciones() {
             const container = document.getElementById('contenedor-comunicaciones');
-            if (datosFais.comunicaciones.length === 0) {
+            if (!datosFais.comunicaciones || datosFais.comunicaciones.length === 0) {
                 container.innerHTML = '<p class="text-slate-400 text-xs">No hay comunicaciones recientes.</p>';
                 return;
             }
@@ -208,11 +208,17 @@
         }
 
         function initNormateca() {
-            const anios = Object.keys(datosFais.normateca).sort().reverse();
+            // CORRECCIÓN: Filtramos y ordenamos de MENOR a MAYOR (sin .reverse())
+            const anios = Object.keys(datosFais.normateca)
+                                .filter(anio => anio !== "" && anio !== "null")
+                                .sort(); 
+            
             const tabsContainer = document.getElementById('tabs-anios');
+            const normatecaContainer = document.getElementById('contenedor-normateca');
             
             if (anios.length === 0) {
-                tabsContainer.innerHTML = '<p class="text-slate-400 text-xs">Sin documentos registrados.</p>';
+                tabsContainer.innerHTML = '<p class="text-slate-400 text-[10px] uppercase font-bold p-4">No hay documentos registrados.</p>';
+                normatecaContainer.innerHTML = "";
                 return;
             }
 
@@ -222,7 +228,7 @@
                 </button>
             `).join('');
 
-            // Cargar el primer año por defecto
+            // Mostramos el primer año del array (el menor)
             renderNormateca(anios[0]);
         }
 
@@ -232,7 +238,6 @@
             document.getElementById('label-ciclo').innerText = `Ciclo Operativo ${anio}`;
 
             let html = '';
-            // Recorrer categorías (ej: Instrumentos Normativos, Guías, etc.)
             for (const categoria in dataAnio) {
                 dataAnio[categoria].forEach(doc => {
                     html += `
@@ -243,7 +248,7 @@
                             </div>
                             <div>
                                 <h5 class="font-bold text-slate-800 text-[10px] mb-1 uppercase tracking-tight">${doc.titulo}</h5>
-                                <p class="text-[9px] text-slate-400 mb-3 font-semibold uppercase">${categoria}</p>
+                                <p class="text-[9px] text-slate-400 mb-3 font-semibold uppercase">${categoria || 'General'}</p>
                                 <a href="storage/documentos/${doc.archivo}" target="_blank" class="btn-descargar">
                                     <i class="fas fa-download"></i> Abrir
                                 </a>
@@ -252,7 +257,7 @@
                     `;
                 });
             }
-            container.innerHTML = html;
+            container.innerHTML = html || '<p class="text-slate-400 text-xs">Sin archivos para este año.</p>';
         }
 
         function changeYear(btn, anio) {
