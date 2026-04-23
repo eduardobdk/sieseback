@@ -5,35 +5,41 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Documento; // Asegúrate de tener el modelo creado
 
 class DocumentoController extends Controller
 {
     /**
-     * Muestra el panel de administración de FAIS
+     * Muestra el panel de administración de FAIS (Vista Blade)
      */
     public function index()
-{
-    // 1. Obtenemos las comunicaciones relevantes
-    $comunicaciones = \App\Models\Documento::where('seccion', 'fais_comunicaciones')
-        ->orderBy('created_at', 'desc')
-        ->get();
+    {
+        $comunicaciones = Documento::where('seccion', 'fais_comunicaciones')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-    // 2. Obtenemos la normateca y la agrupamos por año
-    // Usamos sortKeys() para que los años aparezcan de menor a mayor (2025, 2026...)
-    $normatecaPorAnio = \App\Models\Documento::where('seccion', 'fais_normateca')
-        ->get()
-        ->groupBy('anio')
-        ->sortKeys(); 
+        $normatecaPorAnio = Documento::where('seccion', 'fais_normateca')
+            ->get()
+            ->groupBy('anio')
+            ->sortKeys(); 
 
-    // 3. Enviamos AMBAS variables a la vista
-    return view('fais', compact('comunicaciones', 'normatecaPorAnio'));
+        return view('fais', compact('comunicaciones', 'normatecaPorAnio'));
+    }
+
+    /**
+     * Nuevo método para alimentar la interfaz informativa (JSON)
+     */
+   public function getPorSeccion(Request $request) {
+    $seccion = $request->query('seccion');
+    $documentos = Documento::where('seccion', $seccion)->orderBy('created_at', 'desc')->get();
+    return response()->json($documentos);
 }
-
     public function store(Request $request)
     {
         $request->validate([
             'titulo'    => 'required|string|max:255',
-            'archivo'   => 'required|mimes:pdf|max:10000',
+            // He actualizado las mimes para que acepte Word y Excel como pide tu Blade
+            'archivo'   => 'required|mimes:pdf,doc,docx,xls,xlsx|max:10000',
             'seccion'   => 'required'
         ]);
 
@@ -41,29 +47,28 @@ class DocumentoController extends Controller
             $archivo = $request->file('archivo');
             $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
             $archivo->storeAs('public/documentos', $nombreArchivo);
+            
+            // Usamos el modelo para insertar, es más limpio
+            Documento::create([
+                'titulo'    => $request->titulo,
+                'archivo'   => $nombreArchivo,
+                'extension' => $archivo->getClientOriginalExtension(),
+                'seccion'   => $request->seccion,
+                'anio'      => $request->anio,
+                'categoria' => $request->categoria,
+            ]);
         }
-
-        DB::table('documentos')->insert([
-            'titulo'    => $request->titulo,
-            'archivo'   => $nombreArchivo,
-            'extension' => $archivo->getClientOriginalExtension(),
-            'seccion'   => $request->seccion,
-            'anio'      => $request->anio,      // Se guarda el año para el filtrado
-            'categoria' => $request->categoria, // Se guarda la categoría para el grupo
-            'created_at'=> now(),
-            'updated_at'=> now(),
-        ]);
 
         return back()->with('success', 'Documento guardado correctamente.');
     }
 
     public function destroy($id)
     {
-        $documento = DB::table('documentos')->where('id', $id)->first();
+        $documento = Documento::find($id);
         
         if ($documento) {
             Storage::delete('public/documentos/' . $documento->archivo);
-            DB::table('documentos')->where('id', $id)->delete();
+            $documento->delete();
         }
 
         return back()->with('success', 'Documento eliminado.');

@@ -40,10 +40,8 @@ Route::middleware('auth')->group(function () {
     
     // --- SECCIÓN INICIO (Dinámica) ---
     // Ahora el inicio lo controla ActividadController para mostrar las noticias de la DB
-    Route::get('/inicio', [ActividadController::class, 'index'])->name('panel.inicio');
-    
-    // Ruta para guardar las nuevas noticias/actividades
-    Route::post('/actividad-guardar', [ActividadController::class, 'store'])->name('actividad.store');
+    Route::get('/inicio', [ActividadController::class, 'index'])->name('inicio');
+    Route::post('/actividad/store', [ActividadController::class, 'store'])->name('actividad.store');
 
 
     // --- DEMÁS SECCIONES DEL PANEL ---
@@ -72,7 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/evaluacion/documento/{id}', [EvaluacionController::class, 'destroyDocumento'])->name('evaluacion.documento.destroy');
     
     Route::get('/informes', [InformeController::class, 'index'])->name('panel.informes');
-    Route::get('/informes/info', [InformeController::class, 'index']);
+    Route::get('/informes/info', [App\Http\Controllers\DocumentoController::class, 'getPorSeccion']);
     Route::post('/informes/store', [InformeController::class, 'store'])->name('informes.store');
     Route::post('/informes/info', [InformeController::class, 'updateInfo'])->name('informes.info.update');
     Route::delete('/informes/eliminar/{id}', [InformeController::class, 'destroy'])->name('informes.destroy');
@@ -89,7 +87,14 @@ Route::middleware('auth')->group(function () {
         return view('monitores'); 
     })->name('panel.monitores');
 
-    Route::post('/documento-guardar', [DocumentoController::class, 'store'])->name('documento.store');
-    Route::delete('/documento-eliminar/{id}', [DocumentoController::class, 'destroy'])->name('documento.destroy');
 
+// Ruta para guardar documentos (POST)
+Route::post('/documentos/store', [DocumentoController::class, 'store'])->name('documento.store');
+
+// Ruta para eliminar documentos (DELETE)
+Route::delete('/documentos/{id}', [DocumentoController::class, 'destroy'])->name('documento.destroy');
+
+// Ruta para la API que alimenta la interfaz informativa (GET)
+// Fíjate que sea Route::get y no Route::post
+Route::get('/api/documentos', [DocumentoController::class, 'getPorSeccion']);
 });

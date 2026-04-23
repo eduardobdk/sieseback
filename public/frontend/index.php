@@ -143,46 +143,8 @@
             <div class="h-1 flex-1 bg-gray-200 rounded-full"></div>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-white rounded-2xl shadow-md border-b-4 border-guinda overflow-hidden group hover:shadow-2xl transition-all">
-                <div class="h-48 overflow-hidden bg-gray-100 relative">
-                    <img src="https://siese.chiapas.gob.mx/wp-content/uploads/2024/12/primer_informe.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-4 left-4 bg-guinda text-white text-[9px] font-bold px-3 py-1 rounded-full">NUEVO</div>
-                </div>
-                <div class="bg-zinc-800 p-4 text-center min-h-[70px] flex items-center justify-center">
-                    <h4 class="text-white text-[11px] font-bold uppercase tracking-widest leading-snug">Primer Informe de Gobierno</h4>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-md border-b-4 border-guinda overflow-hidden group">
-                <div class="h-48 overflow-hidden bg-gray-100">
-                    <img src="https://via.placeholder.com/400x300?text=Reuniones+de+Trabajo" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="bg-zinc-800 p-4 text-center min-h-[70px] flex items-center justify-center">
-                    <h4 class="text-white text-[11px] font-bold uppercase tracking-widest leading-snug">Reuniones de Trabajo</h4>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-md border-b-4 border-guinda overflow-hidden group">
-                <div class="h-48 overflow-hidden bg-gray-100">
-                    <img src="https://via.placeholder.com/400x300?text=Inicio+de+Trabajos" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="bg-zinc-800 p-4 text-center min-h-[70px] flex items-center justify-center">
-                    <h4 class="text-white text-[11px] font-bold uppercase tracking-widest leading-snug">Inicio de Trabajos del Primer Informe</h4>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-md border-b-4 border-guinda overflow-hidden group flex flex-col">
-                <div class="h-48 flex flex-col items-center justify-center p-6 text-center bg-gray-50">
-                    <div class="w-16 h-1 bg-guinda mb-4"></div>
-                    <p class="text-guinda font-black text-xl uppercase leading-none italic">Plan Estatal</p>
-                    <p class="text-guinda font-black text-sm uppercase tracking-widest">de Desarrollo</p>
-                    <p class="text-gray-400 font-bold text-[10px] mt-2 border-t pt-2 border-gray-200">2025 - 2030</p>
-                </div>
-                <div class="bg-zinc-800 p-4 text-center min-h-[70px] flex items-center justify-center">
-                    <h4 class="text-white text-[11px] font-bold uppercase tracking-widest leading-snug">Plan Estatal de Desarrollo 2025-2030</h4>
-                </div>
-            </div>
+        <div id="contenedor-actividades-recientes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <p class="col-span-full text-center py-10 text-gray-400 animate-pulse">Cargando actividades recientes...</p>
         </div>
     </main>
 
@@ -211,5 +173,41 @@
         </div>
     </footer>
 
+    <script>
+        async function cargarActividades() {
+            const contenedor = document.getElementById('contenedor-actividades-recientes');
+            try {
+                const response = await fetch('/api/actividades');
+                const actividades = await response.json();
+
+                if (actividades.length === 0) {
+                    contenedor.innerHTML = '<p class="col-span-full text-center py-10 text-gray-400">No hay actividades recientes.</p>';
+                    return;
+                }
+
+                // Tomamos las últimas 4 actividades
+                const ultimasActividades = actividades.slice(0, 4);
+
+                contenedor.innerHTML = ultimasActividades.map((act, index) => `
+                    <div class="bg-white rounded-2xl shadow-md border-b-4 border-guinda overflow-hidden group hover:shadow-2xl transition-all fade-in-up" style="animation-delay: ${index * 0.1}s">
+                        <div class="h-48 overflow-hidden bg-gray-100 relative">
+                            <img src="/image/actividades/${act.imagen}" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                 onerror="this.src='https://via.placeholder.com/400x300?text=SIESE'">
+                            ${index === 0 ? '<div class="absolute top-4 left-4 bg-guinda text-white text-[9px] font-bold px-3 py-1 rounded-full shadow-lg">NUEVO</div>' : ''}
+                        </div>
+                        <div class="bg-zinc-800 p-4 text-center min-h-[70px] flex items-center justify-center">
+                            <h4 class="text-white text-[11px] font-bold uppercase tracking-widest leading-snug">${act.titulo}</h4>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error("Error al cargar actividades:", error);
+                contenedor.innerHTML = '<p class="col-span-full text-center py-10 text-red-500 font-bold">Error al conectar con el servidor.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarActividades);
+    </script>
 </body>
 </html>

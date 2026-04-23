@@ -10,9 +10,9 @@ class ActividadController extends Controller
 {
     // Cargar la página de inicio con las noticias de la DB
     public function index() {
-        $actividades = Actividad::latest()->take(4)->get();
-        return view('inicio', compact('actividades'));
-    }
+    $actividades = Actividad::latest()->get(); // Trae las más recientes primero
+    return view('inicio', compact('actividades'));
+}
 
     // Guardar una nueva noticia
     public function store(Request $request) {

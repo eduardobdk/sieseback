@@ -76,58 +76,8 @@
                     <p class="text-sm font-semibold text-gray-500 uppercase tracking-widest">Listado de Evaluaciones Disponibles</p>
                 </div>
 
-                <div class="doc-visor space-y-1">
-                    
-                    <div class="doc-row flex items-center p-4 gap-5 rounded-xl">
-                        <div class="text-gray-800 text-lg hover:scale-110 hover:text-red-700 transition-all cursor-pointer">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <div class="flex-1">
-                            <a href="#" class="text-red-800 hover:text-[#8D192F] font-medium text-base hover:underline break-words">Evaluacion_del_PED_2024_19_nov_2024.pdf</a>
-                        </div>
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Nov 2024</span>
-                    </div>
-
-                    <div class="doc-row flex items-center p-4 gap-5 rounded-xl">
-                        <div class="text-gray-800 text-lg hover:scale-110 hover:text-red-700 transition-all cursor-pointer">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <div class="flex-1">
-                            <a href="#" class="text-red-800 hover:text-[#8D192F] font-medium text-base hover:underline break-words">Evaluacion_del_PED_2019_2024__2023.pdf</a>
-                        </div>
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Ejercicio 2023</span>
-                    </div>
-
-                    <div class="doc-row flex items-center p-4 gap-5 rounded-xl">
-                        <div class="text-gray-800 text-lg hover:scale-110 hover:text-red-700 transition-all cursor-pointer">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <div class="flex-1">
-                            <a href="#" class="text-red-800 hover:text-[#8D192F] font-medium text-base hover:underline break-words">Evaluacion_del_PED_2019_2024__2022.pdf</a>
-                        </div>
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Ejercicio 2022</span>
-                    </div>
-
-                    <div class="doc-row flex items-center p-4 gap-5 rounded-xl">
-                        <div class="text-gray-800 text-lg hover:scale-110 hover:text-red-700 transition-all cursor-pointer">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <div class="flex-1">
-                            <a href="#" class="text-red-800 hover:text-[#8D192F] font-medium text-base hover:underline break-words">Evaluacion_del_PED_2019_2024__2021.pdf</a>
-                        </div>
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Ejercicio 2021</span>
-                    </div>
-
-                    <div class="doc-row flex items-center p-4 gap-5 rounded-xl border-none">
-                        <div class="text-gray-800 text-lg hover:scale-110 hover:text-red-700 transition-all cursor-pointer">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <div class="flex-1">
-                            <a href="#" class="text-red-800 hover:text-[#8D192F] font-medium text-base hover:underline break-words">Evaluacion_del_PED_2019_2024__2020.pdf</a>
-                        </div>
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Ejercicio 2020</span>
-                    </div>
-
+                <div id="contenedor-docs-evaluacion" class="doc-visor space-y-1">
+                    <p class="text-center py-10 text-gray-400 animate-pulse">Consultando archivos...</p>
                 </div>
             </div>
             
@@ -142,5 +92,48 @@
         <p class="text-[10px] text-gray-400 font-black uppercase tracking-[0.4em]">SIESE | Gobierno de Chiapas</p>
     </footer>
 
+    <script>
+        async function cargarDocumentos() {
+    const contenedor = document.getElementById('contenedor-docs-evaluacion');
+    try {
+        // Usamos la IP directa que ya comprobamos que responde
+        const response = await fetch('http://127.0.0.1:8000/api/documentos?seccion=evaluacion_ped', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok) throw new Error('Error al conectar con el servidor');
+
+        const documentos = await response.json();
+
+        if (documentos.length === 0) {
+            contenedor.innerHTML = '<p class="text-center py-10 text-gray-400">No hay documentos.</p>';
+            return;
+        }
+
+        // Limpiamos y dibujamos
+        contenedor.innerHTML = documentos.map(doc => `
+            <div style="display:flex; align-items:center; padding:15px; background:#fff; margin-bottom:10px; border-radius:8px; border-left:4px solid #b91c1c; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="flex:1;">
+                    <h3 style="margin:0; color:#333; font-size:16px;">${doc.titulo}</h3>
+                    <small style="color:#666;">${doc.extension.toUpperCase()}</small>
+                </div>
+                <a href="http://127.0.0.1:8000/storage/documentos/${doc.archivo}" target="_blank" style="background:#b91c1c; color:white; padding:8px 15px; border-radius:5px; text-decoration:none; font-size:14px;">
+                    Abrir
+                </a>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error(error);
+        contenedor.innerHTML = `<p style="text-align:center; color:red;">Error: No se pudo conectar con el sistema SIESE.</p>`;
+    }
+}
+
+        document.addEventListener('DOMContentLoaded', cargarDocumentos);
+    </script>
 </body>
 </html>

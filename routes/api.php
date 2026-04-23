@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 |--------------------------------------------------------------------------
 */
 
+Route::get('/actividades', function() {
+    return \App\Models\Actividad::latest()->get();
+});
+
 // --- RUTA COPLADE ---
 Route::get('/coplade-data', function () {
     $bienvenida = DB::table('coplade_bienvenidas')->first(); 

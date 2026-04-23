@@ -11,7 +11,7 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array
      */
-    protected $except = [
-        //
-    ];
+   protected $except = [
+    'api/documentos', // Esto permite que el JS externo se conecte sin errores
+];
 }
