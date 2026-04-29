@@ -116,17 +116,17 @@
             </a>
             <span class="text-gray-200 hidden md:block">|</span>
             
-            <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
+            <a href="formatoPED-CHIS_info.php" class="hover:text-guinda transition-colors flex items-center gap-2">
                 <i class="fas fa-folder-open text-xs text-guinda"></i> Formatos Ped-Chiapas
             </a>
             <span class="text-gray-200 hidden md:block">|</span>
 
-            <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
+            <a href="evaprogsec_info.php" class="hover:text-guinda transition-colors flex items-center gap-2">
                 <i class="fas fa-chart-pie text-xs text-guinda"></i> Evaluación Programa Sectorial
             </a>
             <span class="text-gray-200 hidden md:block">|</span>
 
-            <a href="#" class="hover:text-guinda transition-colors flex items-center gap-2">
+            <a href="visoresCONEVAL_info.php" class="hover:text-guinda transition-colors flex items-center gap-2">
                 <i class="fas fa-eye text-xs text-guinda"></i> Visores del CONEVAL
             </a>
 

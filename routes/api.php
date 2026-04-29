@@ -28,6 +28,21 @@ Route::get('/coplade-data', function () {
     ]);
 });
 
+Route::get('/documentos', function (Request $request) {
+    $seccion = $request->query('seccion');
+
+    $query = DB::table('documentos');
+
+    // Si se envía una sección (como evaluacion_ped), filtramos
+    if ($seccion) {
+        $query->where('seccion', $seccion);
+    }
+
+    $documentos = $query->orderBy('created_at', 'desc')->get();
+
+    return response()->json($documentos);
+});
+
 // --- RUTA FAIS (CORREGIDA: MENOR A MAYOR) ---
 Route::get('/fais-data', function () {
     // Comunicaciones Relevantes

@@ -11,6 +11,7 @@ use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\EvaluacionController;
 use App\Http\Controllers\InformeController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,7 +40,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     
     // --- SECCIÓN INICIO (Dinámica) ---
-    // Ahora el inicio lo controla ActividadController para mostrar las noticias de la DB
     Route::get('/inicio', [ActividadController::class, 'index'])->name('inicio');
     Route::post('/actividad/store', [ActividadController::class, 'store'])->name('actividad.store');
 
@@ -61,8 +61,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/seguimiento', [SeguimientoController::class, 'index'])->name('seguimiento.index');
     Route::post('/seguimiento/info', [SeguimientoController::class, 'updateInfo'])->name('seguimiento.info.update');
     Route::post('/seguimiento/registro', [SeguimientoController::class, 'storeRegistro'])->name('seguimiento.registro.store');
-    // Para borrar reciclamos la de DocumentoController que ya existe:
-    // Route::delete('/documento-eliminar/{id}', ...)
 
     Route::get('/evaluacion', [EvaluacionController::class, 'index'])->name('panel.evaluacion');
     Route::post('/evaluacion/info', [EvaluacionController::class, 'updateInfo'])->name('evaluacion.info.update');
@@ -70,31 +68,40 @@ Route::middleware('auth')->group(function () {
     Route::delete('/evaluacion/documento/{id}', [EvaluacionController::class, 'destroyDocumento'])->name('evaluacion.documento.destroy');
     
     Route::get('/informes', [InformeController::class, 'index'])->name('panel.informes');
-    Route::get('/informes/info', [App\Http\Controllers\DocumentoController::class, 'getPorSeccion']);
+    Route::get('/informes/info', [DocumentoController::class, 'getPorSeccion']);
     Route::post('/informes/store', [InformeController::class, 'store'])->name('informes.store');
     Route::post('/informes/info', [InformeController::class, 'updateInfo'])->name('informes.info.update');
     Route::delete('/informes/eliminar/{id}', [InformeController::class, 'destroy'])->name('informes.destroy');
+
+    // --- RUTA DE HERRAMIENTAS (CORREGIDA CON CONEVAL) ---
     Route::get('/herramientas', function () { 
-    // Traemos los documentos separados por sección desde la Base de Datos
-    $eval_ped = \App\Models\Documento::where('seccion', 'evaluacion_ped')->get();
-    $formatos = \App\Models\Documento::where('seccion', 'formatos_ped')->get();
-    $eval_sectorial = \App\Models\Documento::where('seccion', 'evaluacion_sectorial')->get();
-    
-    // Le mandamos esas variables a la vista
-    return view('herramientas', compact('eval_ped', 'formatos', 'eval_sectorial')); 
-})->name('panel.herramientas');
+        // 1. Traemos los documentos normales
+        $eval_ped = \App\Models\Documento::where('seccion', 'evaluacion_ped')->get();
+        $formatos = \App\Models\Documento::where('seccion', 'formatos_ped')->get();
+        $eval_sectorial = \App\Models\Documento::where('seccion', 'evaluacion_sectorial')->get();
+        
+        // 2. Traemos las nuevas secciones de CONEVAL (ESTO ES LO QUE FALTABA)
+        $coneval_comunicaciones = \App\Models\Documento::where('seccion', 'coneval_comunicacion')->latest()->get();
+        $coneval_visores = \App\Models\Documento::where('seccion', 'coneval_visor')->latest()->get();
+        
+        // 3. Enviamos todas las variables a la vista
+        return view('herramientas', compact(
+            'eval_ped', 
+            'formatos', 
+            'eval_sectorial', 
+            'coneval_comunicaciones', 
+            'coneval_visores'
+        )); 
+    })->name('panel.herramientas');
+
+
     Route::get('/monitores', function () { 
         return view('monitores'); 
     })->name('panel.monitores');
 
 
-// Ruta para guardar documentos (POST)
-Route::post('/documentos/store', [DocumentoController::class, 'store'])->name('documento.store');
-
-// Ruta para eliminar documentos (DELETE)
-Route::delete('/documentos/{id}', [DocumentoController::class, 'destroy'])->name('documento.destroy');
-
-// Ruta para la API que alimenta la interfaz informativa (GET)
-// Fíjate que sea Route::get y no Route::post
-Route::get('/api/documentos', [DocumentoController::class, 'getPorSeccion']);
+    // Rutas de Documentos
+    Route::post('/documentos/store', [DocumentoController::class, 'store'])->name('documento.store');
+    Route::delete('/documentos/{id}', [DocumentoController::class, 'destroy'])->name('documento.destroy');
+    Route::get('/api/documentos', [DocumentoController::class, 'getPorSeccion']);
 });

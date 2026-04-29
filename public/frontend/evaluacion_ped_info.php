@@ -114,18 +114,28 @@
             return;
         }
 
-        // Limpiamos y dibujamos
-        contenedor.innerHTML = documentos.map(doc => `
-            <div style="display:flex; align-items:center; padding:15px; background:#fff; margin-bottom:10px; border-radius:8px; border-left:4px solid #b91c1c; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <div style="flex:1;">
-                    <h3 style="margin:0; color:#333; font-size:16px;">${doc.titulo}</h3>
-                    <small style="color:#666;">${doc.extension.toUpperCase()}</small>
-                </div>
-                <a href="http://127.0.0.1:8000/storage/documentos/${doc.archivo}" target="_blank" style="background:#b91c1c; color:white; padding:8px 15px; border-radius:5px; text-decoration:none; font-size:14px;">
-                    Abrir
-                </a>
+        // Limpiamos y dibujamos con el estilo que ya tienes pero asegurando la URL
+contenedor.innerHTML = documentos.map(doc => `
+    <div class="doc-row flex items-center p-4 bg-white mb-3 rounded-xl border-l-4 border-[#8D192F] shadow-sm">
+        <div class="flex-1">
+            <h3 class="font-bold text-gray-800 text-base mb-1">${doc.titulo}</h3>
+            <div class="flex items-center gap-3">
+                <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold uppercase">
+                    ${doc.extension}
+                </span>
+                <span class="text-gray-400 text-[11px]">
+                    <i class="far fa-calendar-alt mr-1"></i> 
+                    ${new Date(doc.created_at).toLocaleDateString('es-MX')}
+                </span>
             </div>
-        `).join('');
+        </div>
+        <a href="http://127.0.0.1:8000/storage/documentos/${doc.archivo}" 
+           target="_blank" 
+           class="bg-[#8D192F] hover:bg-[#6d1224] text-white text-xs font-bold py-2 px-4 rounded-lg transition-all flex items-center gap-2">
+            <i class="fas fa-download"></i> Descargar
+        </a>
+    </div>
+`).join('');
 
     } catch (error) {
         console.error(error);
