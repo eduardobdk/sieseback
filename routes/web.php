@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     // --- SECCIÓN INICIO (Dinámica) ---
     Route::get('/inicio', [ActividadController::class, 'index'])->name('inicio');
     Route::post('/actividad/store', [ActividadController::class, 'store'])->name('actividad.store');
+    Route::delete('/actividad/eliminar/{id}', [ActividadController::class, 'destroy'])->name('actividad.destroy');
 
 
     // --- DEMÁS SECCIONES DEL PANEL ---

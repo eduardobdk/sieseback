@@ -174,40 +174,126 @@
     </footer>
 
     <script>
-        async function cargarActividades() {
-            const contenedor = document.getElementById('contenedor-actividades-recientes');
-            try {
-                const response = await fetch('/api/actividades');
-                const actividades = await response.json();
+    let actividadesData = []; // Para guardar los datos globalmente
 
-                if (actividades.length === 0) {
-                    contenedor.innerHTML = '<p class="col-span-full text-center py-10 text-gray-400">No hay actividades recientes.</p>';
-                    return;
-                }
+    async function cargarActividades() {
+        const contenedor = document.getElementById('contenedor-actividades-recientes');
+        try {
+            const response = await fetch('/api/actividades');
+            actividadesData = await response.json();
 
-                // Tomamos las últimas 4 actividades
-                const ultimasActividades = actividades.slice(0, 4);
-
-                contenedor.innerHTML = ultimasActividades.map((act, index) => `
-                    <div class="bg-white rounded-2xl shadow-md border-b-4 border-guinda overflow-hidden group hover:shadow-2xl transition-all fade-in-up" style="animation-delay: ${index * 0.1}s">
-                        <div class="h-48 overflow-hidden bg-gray-100 relative">
-                            <img src="/image/actividades/${act.imagen}" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                 onerror="this.src='https://via.placeholder.com/400x300?text=SIESE'">
-                            ${index === 0 ? '<div class="absolute top-4 left-4 bg-guinda text-white text-[9px] font-bold px-3 py-1 rounded-full shadow-lg">NUEVO</div>' : ''}
-                        </div>
-                        <div class="bg-zinc-800 p-4 text-center min-h-[70px] flex items-center justify-center">
-                            <h4 class="text-white text-[11px] font-bold uppercase tracking-widest leading-snug">${act.titulo}</h4>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error("Error al cargar actividades:", error);
-                contenedor.innerHTML = '<p class="col-span-full text-center py-10 text-red-500 font-bold">Error al conectar con el servidor.</p>';
+            if (actividadesData.length === 0) {
+                contenedor.innerHTML = '<p class="col-span-full text-center py-10 text-gray-400">No hay actividades recientes.</p>';
+                return;
             }
-        }
 
-        document.addEventListener('DOMContentLoaded', cargarActividades);
-    </script>
+            const ultimasActividades = actividadesData.slice(0, 4);
+
+            contenedor.innerHTML = ultimasActividades.map((act, index) => `
+                <div onclick="abrirModal(${index})" class="cursor-pointer bg-white rounded-2xl shadow-md border-b-4 border-guinda overflow-hidden group hover:shadow-2xl transition-all fade-in-up" style="animation-delay: ${index * 0.1}s">
+                    <div class="h-48 overflow-hidden bg-gray-100 relative">
+                        <img src="/image/actividades/${act.imagen}" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://via.placeholder.com/400x300?text=SIESE'">
+                        ${index === 0 ? '<div class="absolute top-4 left-4 bg-guinda text-white text-[9px] font-bold px-3 py-1 rounded-full shadow-lg">NUEVO</div>' : ''}
+                    </div>
+                    <div class="bg-zinc-800 p-4 text-center min-h-[70px] flex items-center justify-center group-hover:bg-guinda transition-colors">
+                        <h4 class="text-white text-[11px] font-bold uppercase tracking-widest leading-snug">${act.titulo}</h4>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error("Error al cargar actividades:", error);
+            contenedor.innerHTML = '<p class="col-span-full text-center py-10 text-red-500 font-bold">Error al conectar con el servidor.</p>';
+        }
+    }
+
+    function abrirModal(index) {
+        const act = actividadesData[index];
+        const modal = document.getElementById('modal-actividad');
+        
+        document.getElementById('modal-titulo').innerText = act.titulo;
+        document.getElementById('modal-contenido').innerText = act.contenido || 'Sin descripción disponible.';
+        document.getElementById('modal-imagen').src = `/image/actividades/${act.imagen}`;
+        document.getElementById('modal-imagen').onerror = function() { this.src = 'https://via.placeholder.com/400x300?text=SIESE'; };
+
+        // Mostrar modal con animación sencilla
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Bloquear scroll del fondo
+    }
+
+    function cerrarModal() {
+        const modal = document.getElementById('modal-actividad');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Reactivar scroll
+    }
+
+    document.addEventListener('DOMContentLoaded', cargarActividades);
+</script>
+
+    <!-- Modal con Espacios Simétricos -->
+<div id="modal-actividad" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 md:p-8">
+    <div class="absolute inset-0 bg-black/85 backdrop-blur-sm" onclick="cerrarModal()"></div>
+    
+    <!-- Contenedor Principal -->
+    <div class="bg-white w-full max-w-7xl rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 flex flex-col md:flex-row h-auto max-h-[92vh]">
+        
+        <!-- Columna de Imagen (60%): Añadimos padding para que no pegue al borde izquierdo -->
+        <div class="w-full md:w-[60%] bg-white flex items-center justify-center p-6 md:p-10">
+            <div class="w-full h-full flex items-center justify-center bg-zinc-50 rounded-2xl overflow-hidden">
+                <img id="modal-imagen" 
+                     src="" 
+                     class="max-w-full max-h-full object-contain shadow-sm" 
+                     alt="Actividad">
+            </div>
+        </div>
+        
+        <!-- Columna de Texto (40%): Padding simétrico -->
+        <div class="w-full md:w-[40%] p-8 md:p-12 md:pl-4 flex flex-col bg-white">
+            <div class="flex justify-between items-start mb-6">
+                <span class="bg-guinda text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
+                    Comunicado Oficial
+                </span>
+                <button onclick="cerrarModal()" class="text-gray-400 hover:text-guinda transition-all">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <h2 id="modal-titulo" class="text-2xl md:text-3xl font-black text-gray-800 uppercase tracking-tighter mb-6 leading-tight">
+                <!-- Título -->
+            </h2>
+            
+            <div id="modal-contenido" class="text-gray-600 leading-relaxed text-base text-justify overflow-y-auto pr-6 custom-scrollbar">
+                <!-- Contenido -->
+            </div>
+            
+            <div class="mt-auto pt-8 flex justify-between items-center border-t border-gray-50">
+                <div>
+                    <p class="text-[10px] font-black text-guinda uppercase tracking-widest">SIESE</p>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase">Gobierno de Chiapas</p>
+                </div>
+                <button onclick="cerrarModal()" class="bg-zinc-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">
+                    Cerrar ventana
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #modal-contenido {
+    text-justify: inter-word;
+}
+/* Estilo del scroll para que no ocupe mucho espacio */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+    
+</style>
+
 </body>
 </html>

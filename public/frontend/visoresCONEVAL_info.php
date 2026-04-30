@@ -1,3 +1,20 @@
+<?php
+// 1. Cargamos el cargador de clases de Laravel (Ajusta la ruta si es necesario)
+// Subimos dos niveles para salir de public/frontend y llegar a la raíz del proyecto
+require __DIR__ . '/../../vendor/autoload.php';
+
+// 2. Iniciamos la aplicación Laravel
+$app = require_once __DIR__ . '/../../bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$kernel->handle(Illuminate\Http\Request::capture());
+
+// 3. Ahora ya podemos usar el modelo de Laravel
+use App\Models\Documento;
+
+$coneval_comunicaciones = Documento::where('seccion', 'coneval_comunicacion')->get();
+$coneval_visores = Documento::where('seccion', 'coneval_visor')->get();
+?>
+
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
@@ -138,13 +155,19 @@
                     </div>
 
                     <div id="grid-comunicaciones" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="comunicacion-card">
-                            <img src="https://via.placeholder.com/400x250?text=Avance+Monitoreo" class="comunicacion-img" alt="Comunicación">
-                            <div class="comunicacion-footer">
-                                Resultados del Diagnóstico del Avance en Monitoreo 2023
-                            </div>
-                        </div>
-                        </div>
+                        <?php if(isset($coneval_comunicaciones) && count($coneval_comunicaciones) > 0): ?>
+                            <?php foreach($coneval_comunicaciones as $com): ?>
+                                <div class="comunicacion-card">
+                                    <img src="/storage/documentos/<?php echo $com->archivo; ?>" class="comunicacion-img" alt="<?php echo $com->titulo; ?>">
+                                    <div class="comunicacion-footer">
+                                        <?php echo $com->titulo; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="col-span-full text-center text-gray-400">No hay comunicaciones disponibles por el momento.</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div>
@@ -155,16 +178,22 @@
                     </div>
 
                     <div id="lista-visores" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <a href="#" target="_blank" class="visor-link-item group">
-                            <div class="visor-icon">
-                                <i class="fas fa-road"></i>
-                            </div>
-                            <div class="flex-grow">
-                                <h4 class="font-bold text-sm text-gray-800 leading-tight">Accesibilidad a Carretera Pavimentada</h4>
-                                <p class="text-[10px] text-gray-400 font-medium mt-1 truncate max-w-[200px]">http://visor.coneval.org.mx/gacp</p>
-                            </div>
-                            <i class="fas fa-external-link-alt text-gray-300 group-hover:text-[#8D192F] transition-colors"></i>
-                        </a>
+                        <?php if(isset($coneval_visores) && count($coneval_visores) > 0): ?>
+                            <?php foreach($coneval_visores as $visor): ?>
+                                <a href="<?php echo $visor->archivo; ?>" target="_blank" class="visor-link-item group">
+                                    <div class="visor-icon">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h4 class="font-bold text-sm text-gray-800 leading-tight"><?php echo $visor->titulo; ?></h4>
+                                        <p class="text-[10px] text-gray-400 font-medium mt-1 truncate max-w-[200px]"><?php echo $visor->archivo; ?></p>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-300 group-hover:text-[#8D192F] transition-colors"></i>
+                                </a>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="col-span-full text-center text-gray-400">No hay enlaces registrados.</p>
+                        <?php endif; ?>
                     </div>
                 </div>
 
