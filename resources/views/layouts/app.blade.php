@@ -23,6 +23,9 @@
             <a href="{{ url('/informes') }}" class="nav-item"><div class="icon-circle bg-verde"><i class="bi bi-file-earmark-bar-graph-fill"></i></div> INFORMES</a>
             <a href="{{ url('/herramientas') }}" class="nav-item"><div class="icon-circle bg-negro"><i class="bi bi-tools"></i></div> HERRAMIENTAS</a>
             <a href="{{ url('/monitores') }}" class="nav-item"><div class="icon-circle bg-rosa"><i class="bi bi-speedometer2"></i></div> MONITORES</a>
+            <a href="{{ route('panel.usuarios') }}" class="nav-item"><div class="icon-circle" style="background-color: #6f42c1;"><i class="bi bi-person-fill"></i></div> USUARIOS</a>
+            <a href="{{ route('footer.index') }}" class="nav-item"><div class="icon-circle" style="background-color: #343a40;"><i class="bi bi-layout-text-window-reverse"></i></div> PIE DE PÁGINA</a>
+</li>
         </nav>
     </div>
     <div class="main-content">

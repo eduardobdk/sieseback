@@ -197,7 +197,7 @@
             }
 
             container.innerHTML = datosFais.comunicaciones.map(c => `
-                <a href="storage/documentos/${c.archivo}" target="_blank" class="card-comunicacion p-6 group">
+                <a href="http://localhost:8000/storage/documentos/${c.archivo}" target="_blank" class="card-comunicacion p-6 group">
                     <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center mb-4 text-slate-400 group-hover:text-red-800 transition-colors">
                         <i class="fas fa-file-pdf text-sm"></i>
                     </div>
@@ -249,7 +249,7 @@
                             <div>
                                 <h5 class="font-bold text-slate-800 text-[10px] mb-1 uppercase tracking-tight">${doc.titulo}</h5>
                                 <p class="text-[9px] text-slate-400 mb-3 font-semibold uppercase">${categoria || 'General'}</p>
-                                <a href="storage/documentos/${doc.archivo}" target="_blank" class="btn-descargar">
+                                <a href="http://localhost:8000/storage/documentos/${doc.archivo}" target="_blank" class="btn-descargar">
                                     <i class="fas fa-download"></i> Abrir
                                 </a>
                             </div>

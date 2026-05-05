@@ -102,10 +102,24 @@
                 </div>
 
                 <div id="dyn-sesiones" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    </div>
+                </div>
             </div>
         </section>
     </main>
+
+    <!-- MODAL PARA VER LA IMAGEN (TAMAÑO REDUCIDO Y FONDO TRANSPARENTE) -->
+    <div id="modal-imagen" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-all duration-300 opacity-0">
+        <!-- Botón de cerrar -->
+        <button onclick="cerrarModal()" class="absolute top-6 right-6 md:top-10 md:right-10 text-white hover:text-red-500 text-4xl md:text-5xl transition-colors drop-shadow-md">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <!-- Contenido del Modal -->
+        <div class="max-w-3xl w-full flex flex-col items-center">
+            <img id="modal-img-src" src="" alt="Sesión ampliada" class="max-h-[55vh] w-auto object-contain rounded-xl shadow-2xl">
+            <h3 id="modal-titulo" class="text-white text-xl md:text-2xl font-bold mt-5 text-center uppercase tracking-wide drop-shadow-lg"></h3>
+        </div>
+    </div>
 
     <script>
         const API_URL = 'http://localhost:8000/api/coplade-data';
@@ -158,6 +172,11 @@
                                 <div class="mt-2 text-[9px] bg-slate-100 px-2 py-1 rounded font-bold text-slate-500 uppercase inline-block">Ejercicio ${anio}</div>
                             </div>
                         `;
+                        
+                        // Evento clic para abrir el modal
+                        const rutaImagen = `../image/coplade/${sesion.imagen}`;
+                        card.onclick = () => abrirModal(rutaImagen, sesion.titulo);
+
                         sesionesContainer.appendChild(card);
                     });
                 });
@@ -178,6 +197,32 @@
             document.querySelectorAll('.card-sesion').forEach(card => {
                 card.style.display = card.classList.contains('sesion-year-' + anio) ? 'flex' : 'none';
             });
+        }
+
+        // Funciones para el Modal de Imágenes
+        function abrirModal(ruta, titulo) {
+            const modal = document.getElementById('modal-imagen');
+            document.getElementById('modal-img-src').src = ruta;
+            document.getElementById('modal-titulo').innerText = titulo;
+            
+            // Mostrar el modal con una transición suave
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('flex', 'opacity-100');
+            }, 10);
+        }
+
+        function cerrarModal() {
+            const modal = document.getElementById('modal-imagen');
+            
+            // Ocultar el modal con transición
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300); // Espera a que termine la animación de opacidad
         }
 
         window.onload = cargarDatos;

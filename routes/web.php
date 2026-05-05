@@ -1,5 +1,6 @@
 <?php
-
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\FooterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ActividadController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\PlaneacionController;
 use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\EvaluacionController;
 use App\Http\Controllers\InformeController;
+
 
 
 /*
@@ -39,6 +41,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ==========================================
 Route::middleware('auth')->group(function () {
     
+    // --- GESTIÓN DE USUARIOS ---
+    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('panel.usuarios');
+    Route::post('/usuarios/store', [UsuarioController::class, 'store'])->name('usuarios.store');
+    Route::delete('/usuarios/eliminar/{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
+    Route::get('/panel/footer', [FooterController::class, 'index'])->name('footer.index');
+    Route::post('/panel/footer/update', [FooterController::class, 'update'])->name('footer.update');
     // --- SECCIÓN INICIO (Dinámica) ---
     Route::get('/inicio', [ActividadController::class, 'index'])->name('inicio');
     Route::post('/actividad/store', [ActividadController::class, 'store'])->name('actividad.store');

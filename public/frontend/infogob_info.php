@@ -150,19 +150,19 @@ $informes = Informe::latest()->get();
                                 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <?php if($informe->pdf_contexto): ?>
-                                    <a href="<?= asset('storage/documentos/'.$informe->pdf_contexto) ?>" target="_blank" class="btn-doc-download">
+                                   <a href="/storage/documentos/<?= $informe->pdf_contexto ?>" target="_blank" class="btn-doc-download">
                                         <i class="fas fa-file-pdf text-red-700 text-lg"></i> <span>Contexto Estatal</span>
                                     </a>
                                     <?php endif; ?>
 
                                     <?php if($informe->pdf_anexo1): ?>
-                                    <a href="<?= asset('storage/documentos/'.$informe->pdf_anexo1) ?>" target="_blank" class="btn-doc-download">
+                                    <a href="/storage/documentos/<?= $informe->pdf_anexo1 ?>" target="_blank" class="btn-doc-download">
                                         <i class="fas fa-chart-line text-blue-700 text-lg"></i> <span>Anexo I: Indicadores PED</span>
                                     </a>
                                     <?php endif; ?>
 
                                     <?php if($informe->pdf_anexo2): ?>
-                                    <a href="<?= asset('storage/documentos/'.$informe->pdf_anexo2) ?>" target="_blank" class="btn-doc-download">
+                                    <a href="/storage/documentos/<?= $informe->pdf_anexo2 ?>" target="_blank" class="btn-doc-download">
                                         <i class="fas fa-coins text-amber-600 text-lg"></i> <span>Anexo II: Financiamiento</span>
                                     </a>
                                     <?php endif; ?>

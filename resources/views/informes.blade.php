@@ -79,14 +79,12 @@
                         
                         <div style="display: flex; gap: 10px; font-size: 0.8rem;">
                             @if($informe->pdf_contexto)
-                                <a href="{{ asset('storage/documentos/'.$informe->pdf_contexto) }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Contexto</a>
-                            @endif
+                              <a href="/storage/documentos/{{ $informe->pdf_contexto }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Contexto</a>
                             @if($informe->pdf_anexo1)
-                                <a href="{{ asset('storage/documentos/'.$informe->pdf_anexo1) }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 1</a>
+                                <a href="/storage/documentos/{{ $informe->pdf_anexo1 }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 1</a>
                             @endif
                             @if($informe->pdf_anexo2)
-                                <a href="{{ asset('storage/documentos/'.$informe->pdf_anexo2) }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 2</a>
-                            @endif
+                                <a href="/storage/documentos/{{ $informe->pdf_anexo2 }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 2</a>
                         </div>
                     </div>
 
