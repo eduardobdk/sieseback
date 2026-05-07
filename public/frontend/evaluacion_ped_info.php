@@ -145,5 +145,6 @@ contenedor.innerHTML = documentos.map(doc => `
 
         document.addEventListener('DOMContentLoaded', cargarDocumentos);
     </script>
+    <?php include 'footer_publico.php'; ?>
 </body>
 </html>

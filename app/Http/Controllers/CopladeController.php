@@ -21,7 +21,6 @@ class CopladeController extends Controller
         }
 
         // 2. Traemos todas las sesiones ordenadas por año (del más nuevo al más viejo)
-        // Usamos groupBy('anio') para que Laravel las separe automáticamente en pestañas
         $sesionesPorAnio = CopladeSesion::orderBy('anio', 'desc')
                             ->orderBy('created_at', 'desc')
                             ->get()
@@ -47,6 +46,9 @@ class CopladeController extends Controller
         $sesion->anio = $request->anio;
         $sesion->apartado = $request->apartado;
         $sesion->titulo = $request->titulo;
+        
+        // AQUÍ ESTÁ LA MAGIA: Le decimos a Laravel que guarde el texto del editor
+        $sesion->detalle_sesion = $request->detalle_sesion;
 
         if ($request->hasFile('imagen')) {
             $nombreImagen = time() . '_' . $request->imagen->getClientOriginalName();

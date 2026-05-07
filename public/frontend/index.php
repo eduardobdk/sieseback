@@ -148,30 +148,53 @@
         </div>
     </main>
 
-    <footer class="bg-zinc-900 text-gray-400 pt-16 pb-10 border-t-8 border-guinda">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
-            <div>
-                <h5 class="text-white font-black mb-6 uppercase text-[10px] tracking-[0.2em] border-b border-zinc-800 pb-3">Contactos</h5>
-                <div class="space-y-2">
-                    <p class="text-[10px] font-bold uppercase tracking-tighter hover:text-white transition-colors cursor-default">Manuel Francisco Antonio Pariente Gavito</p>
-                    <p class="text-[10px] font-bold uppercase tracking-tighter hover:text-white transition-colors cursor-default">José Antonio Zenteno Santiago</p>
-                </div>
-            </div>
-            <div>
-                <h5 class="text-white font-black mb-6 uppercase text-[10px] tracking-[0.2em] border-b border-zinc-800 pb-3">Visítanos</h5>
-                <p class="text-[10px] font-medium leading-relaxed uppercase">Torre Chiapas, Nivel 10. Blvd. Andrés Serra Rojas. Gutiérrez, C.P. 29045.</p>
-            </div>
-            <div class="flex flex-col items-center md:items-end">
-                <h5 class="text-white font-black mb-6 uppercase text-[10px] tracking-[0.2em] border-b border-zinc-800 pb-3 w-full text-center md:text-right">Sistema</h5>
-                <p class="text-[10px] uppercase tracking-[0.3em] font-black text-zinc-600">© 2026 SIESE Chiapas</p>
-                <div class="mt-4 flex gap-4 text-zinc-700">
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-twitter"></i>
-                    <i class="fas fa-globe"></i>
-                </div>
+   <footer style="background-color: #1a1a1a; color: #fff; padding: 40px 20px; font-family: 'Inter', sans-serif;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 30px;">
+        
+        <div style="flex: 1; min-width: 250px;">
+            <h4 style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">Contactos</h4>
+            <p id="dinamico-contacto-1" style="font-size: 11px; color: #aaa; margin-bottom: 8px;">Cargando...</p>
+            <p id="dinamico-contacto-2" style="font-size: 11px; color: #aaa;">Cargando...</p>
+        </div>
+
+        <div style="flex: 1; min-width: 250px;">
+            <h4 style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">Visítanos</h4>
+            <p id="dinamico-direccion" style="font-size: 11px; color: #aaa; line-height: 1.6;">Cargando...</p>
+        </div>
+
+        <div style="flex: 1; min-width: 250px; text-align: right;">
+            <h4 style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">Sistema</h4>
+            <p id="dinamico-copyright" style="font-size: 11px; color: #aaa; margin-bottom: 15px; letter-spacing: 2px;">Cargando...</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                <a id="dinamico-fb" href="#" target="_blank" style="color: #666; display: none;"><i class="fab fa-facebook-f"></i></a>
+                <a id="dinamico-tw" href="#" target="_blank" style="color: #666; display: none;"><i class="fab fa-twitter"></i></a>
+                <a id="dinamico-web" href="#" target="_blank" style="color: #666; display: none;"><i class="fas fa-globe"></i></a>
             </div>
         </div>
-    </footer>
+
+    </div>
+</footer>
+
+<script>
+    fetch('http://localhost:8000/api/footer-data')
+        .then(response => response.json())
+        .then(data => {
+            if(data) {
+                // Remplaza los textos con lo que escribiste en el panel
+                document.getElementById('dinamico-contacto-1').innerText = data.contacto_1 || '';
+                document.getElementById('dinamico-contacto-2').innerText = data.contacto_2 || '';
+                document.getElementById('dinamico-direccion').innerText = data.direccion || '';
+                document.getElementById('dinamico-copyright').innerText = data.copyright || '';
+                
+                // Pone los links de redes sociales
+                if(data.url_facebook) { document.getElementById('dinamico-fb').href = data.url_facebook; document.getElementById('dinamico-fb').style.display = 'inline-block'; }
+                if(data.url_twitter)  { document.getElementById('dinamico-tw').href = data.url_twitter; document.getElementById('dinamico-tw').style.display = 'inline-block'; }
+                if(data.url_web)      { document.getElementById('dinamico-web').href = data.url_web; document.getElementById('dinamico-web').style.display = 'inline-block'; }
+            }
+        })
+        .catch(error => console.error('Error al conectar con el panel de admin:', error));
+</script>
 
     <script>
     let actividadesData = []; // Para guardar los datos globalmente
@@ -294,6 +317,6 @@
 }
     
 </style>
-
+<?php include 'footer_publico.php'; ?>
 </body>
 </html>

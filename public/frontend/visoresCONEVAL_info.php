@@ -216,5 +216,6 @@ $coneval_visores = Documento::where('seccion', 'coneval_visor')->get();
 
         document.addEventListener('DOMContentLoaded', cargarDatosCONEVAL);
     </script>
+    <?php include 'footer_publico.php'; ?>
 </body>
 </html>

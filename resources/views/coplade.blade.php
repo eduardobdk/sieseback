@@ -22,17 +22,17 @@
             @csrf
             <div class="grupo-input">
                 <label>Título Principal:</label>
-                <input type="text" name="titulo" class="input-control" value="{{ $bienvenida->titulo }}" required>
+                <input type="text" name="titulo" class="input-control" value="{{ $bienvenida->titulo ?? '' }}" required>
             </div>
             <div class="grupo-input">
                 <label>Subtítulo:</label>
-                <input type="text" name="subtitulo" class="input-control" value="{{ $bienvenida->subtitulo }}" required>
+                <input type="text" name="subtitulo" class="input-control" value="{{ $bienvenida->subtitulo ?? '' }}" required>
             </div>
             <div class="grupo-input">
                 <label>Descripción:</label>
-                <textarea name="descripcion" class="input-form area-texto" rows="3" required>{{ $bienvenida->descripcion }}</textarea>
+                <textarea name="descripcion" class="input-form area-texto" rows="3" required>{{ $bienvenida->descripcion ?? '' }}</textarea>
             </div>
-            <div class="caja-botones">
+            <div class="caja-botones mt-3">
                 <button type="submit" class="btn-gob btn-guardar"><i class="bi bi-floppy"></i> Actualizar Bienvenida</button>
             </div>
         </form>
@@ -54,6 +54,7 @@
                     <input type="text" name="apartado" class="input-control" placeholder="Ej. Sesiones ordinarias..." required>
                 </div>
             </div>
+            
             <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
                 <div class="grupo-input" style="flex: 2; min-width: 250px;">
                     <label>Título de la Sesión:</label>
@@ -64,6 +65,12 @@
                     <input type="file" name="imagen" class="input-control" accept="image/*">
                 </div>
             </div>
+
+            <div class="grupo-input" style="margin-top: 15px;">
+                <label>Detalles / Descripción de la Sesión (Opcional):</label>
+                <textarea name="detalle_sesion" id="editor-nueva-sesion" class="input-control" rows="4"></textarea>
+            </div>
+
             <button type="submit" class="btn-gob mt-3" style="background: var(--gob-verde); color:white;"><i class="bi bi-plus-lg"></i> Guardar Sesión</button>
         </form>
     </div>
@@ -73,7 +80,7 @@
         <p class="texto-ayuda">Aquí puede visualizar y eliminar las sesiones agrupadas por año.</p>
         <hr class="linea-divisoria">
 
-        @if($sesionesPorAnio->count() > 0)
+        @if($sesionesPorAnio && $sesionesPorAnio->count() > 0)
             <div class="tabs-anios">
                 @foreach($sesionesPorAnio as $anio => $sesiones)
                     <button class="tab-anio {{ $loop->first ? 'activo' : '' }}" onclick="abrirAnio(event, 'anio-{{ $anio }}')">{{ $anio }}</button>
@@ -129,5 +136,15 @@
             document.getElementById(idAnio).classList.add("activo");
             evento.currentTarget.classList.add("activo");
         }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.1/ckeditor.js"></script>
+    <script>
+        // Le decimos que espere a que cargue la página y luego aplique el editor
+        window.addEventListener('load', function() {
+            if(typeof CKEDITOR !== 'undefined') {
+                CKEDITOR.replace('editor-nueva-sesion');
+            }
+        });
     </script>
 @endsection

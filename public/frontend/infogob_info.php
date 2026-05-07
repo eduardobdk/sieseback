@@ -94,13 +94,6 @@ $informes = Informe::latest()->get();
                 <div class="w-1.5 bg-[#8D192F] h-6 rounded-full"></div>
                 <h1 class="text-lg font-extrabold tracking-tight">SIESE <span class="font-normal text-slate-400">| INFORMES</span></h1>
             </div>
-            <nav class="flex flex-wrap justify-center items-center gap-x-8 gap-y-2">
-                <a href="#" class="nav-link-siese">Actividades</a>
-                <a href="#" class="nav-link-siese">Evaluación PED-Chiapas</a>
-                <a href="#" class="nav-link-siese">Formatos PRED-Chiapas</a>
-                <a href="#" class="nav-link-siese">Evaluación Programa Sectorial</a>
-                <a href="#" class="nav-link-siese">Visores del CONEVAL</a>
-            </nav>
             <a href="index.php" class="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-800 transition-colors">
                 <i class="fas fa-home transition-transform group-hover:-translate-y-0.5"></i> Inicio
             </a>
@@ -192,5 +185,6 @@ $informes = Informe::latest()->get();
             <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.6em]">SIESE v3.0 | Sistema Estatal de Seguimiento y Evaluación</p>
         </footer>
     </main>
+    <?php include 'footer_publico.php'; ?>
 </body>
 </html>

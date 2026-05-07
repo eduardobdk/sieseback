@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use App\Models\Footer;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,4 +67,7 @@ Route::get('/fais-data', function () {
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+Route::get('/footer-data', function () {
+    return response()->json(Footer::first() ?? []);
 });

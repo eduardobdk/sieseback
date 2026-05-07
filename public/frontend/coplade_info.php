@@ -37,6 +37,12 @@
         .exit-animation { opacity: 0; visibility: hidden; transform: scale(0.95); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
+        
+        /* Estilos para el HTML de CKEditor dentro del Modal */
+        #modal-detalle p { margin-bottom: 10px; }
+        #modal-detalle ul { list-style-type: disc; margin-left: 20px; margin-bottom: 10px; }
+        #modal-detalle ol { list-style-type: decimal; margin-left: 20px; margin-bottom: 10px; }
+        #modal-detalle strong, #modal-detalle b { font-weight: bold; color: #fff; }
     </style>
 </head>
 <body class="antialiased">
@@ -75,12 +81,6 @@
                 <div class="w-1.5 bg-[#8D192F] h-6 rounded-full"></div>
                 <h1 class="text-lg font-extrabold tracking-tight">SIESE <span class="font-normal text-slate-400">| COPLADE</span></h1>
             </div>
-            <nav class="flex flex-wrap justify-center items-center gap-x-8 gap-y-2">
-                <a href="#" class="nav-link-siese">Actividades</a>
-                <a href="#" class="nav-link-siese">Evaluación PED</a>
-                <a href="#" class="nav-link-siese">Formatos PRED</a>
-                <a href="#" class="nav-link-siese">Visores CONEVAL</a>
-            </nav>
             <a href="index.php" class="text-[10px] font-black uppercase text-slate-400 hover:text-red-800"><i class="fas fa-home"></i> Inicio</a>
         </div>
     </header>
@@ -107,17 +107,17 @@
         </section>
     </main>
 
-    <!-- MODAL PARA VER LA IMAGEN (TAMAÑO REDUCIDO Y FONDO TRANSPARENTE) -->
-    <div id="modal-imagen" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-all duration-300 opacity-0">
-        <!-- Botón de cerrar -->
+    <div id="modal-imagen" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/60 backdrop-blur-md p-4 transition-all duration-300 opacity-0">
         <button onclick="cerrarModal()" class="absolute top-6 right-6 md:top-10 md:right-10 text-white hover:text-red-500 text-4xl md:text-5xl transition-colors drop-shadow-md">
             <i class="fas fa-times"></i>
         </button>
         
-        <!-- Contenido del Modal -->
-        <div class="max-w-3xl w-full flex flex-col items-center">
-            <img id="modal-img-src" src="" alt="Sesión ampliada" class="max-h-[55vh] w-auto object-contain rounded-xl shadow-2xl">
+        <div class="max-w-4xl w-full flex flex-col items-center">
+            <img id="modal-img-src" src="" alt="Sesión ampliada" class="max-h-[45vh] w-auto object-contain rounded-xl shadow-2xl border-4 border-white/10">
             <h3 id="modal-titulo" class="text-white text-xl md:text-2xl font-bold mt-5 text-center uppercase tracking-wide drop-shadow-lg"></h3>
+            
+            <div id="modal-detalle" class="text-slate-200 mt-4 max-w-3xl w-full text-justify text-sm md:text-base leading-relaxed bg-black/40 p-6 rounded-xl overflow-y-auto max-h-[30vh] border border-white/10">
+                </div>
         </div>
     </div>
 
@@ -150,14 +150,12 @@
                 sesionesContainer.innerHTML = '';
 
                 anios.forEach((anio, index) => {
-                    // Botón de año
                     const btn = document.createElement('button');
                     btn.className = `year-tab text-[12px] font-bold uppercase tracking-tighter text-slate-500 hover:text-red-800 ${index === 0 ? 'active' : ''}`;
                     btn.innerText = anio;
                     btn.onclick = (e) => selectYear(e.target, anio);
                     tabsContainer.appendChild(btn);
 
-                    // Tarjetas
                     data.sesiones[anio].forEach(sesion => {
                         const card = document.createElement('div');
                         card.className = `card-sesion group cursor-pointer sesion-year-${anio}`;
@@ -173,9 +171,9 @@
                             </div>
                         `;
                         
-                        // Evento clic para abrir el modal
+                        // EVENTO CLIC ACTUALIZADO (Añadido sesion.detalle_sesion)
                         const rutaImagen = `../image/coplade/${sesion.imagen}`;
-                        card.onclick = () => abrirModal(rutaImagen, sesion.titulo);
+                        card.onclick = () => abrirModal(rutaImagen, sesion.titulo, sesion.detalle_sesion);
 
                         sesionesContainer.appendChild(card);
                     });
@@ -199,13 +197,21 @@
             });
         }
 
-        // Funciones para el Modal de Imágenes
-        function abrirModal(ruta, titulo) {
+        // FUNCIÓN ABRIR MODAL ACTUALIZADA
+        function abrirModal(ruta, titulo, detalleHtml) {
             const modal = document.getElementById('modal-imagen');
             document.getElementById('modal-img-src').src = ruta;
             document.getElementById('modal-titulo').innerText = titulo;
             
-            // Mostrar el modal con una transición suave
+            // Inyectar el texto con HTML
+            const contenedorDetalle = document.getElementById('modal-detalle');
+            if (detalleHtml && detalleHtml.trim() !== '') {
+                contenedorDetalle.innerHTML = detalleHtml;
+                contenedorDetalle.style.display = 'block';
+            } else {
+                contenedorDetalle.style.display = 'none'; // Se oculta si no escribiste nada en el admin
+            }
+            
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
@@ -215,17 +221,16 @@
 
         function cerrarModal() {
             const modal = document.getElementById('modal-imagen');
-            
-            // Ocultar el modal con transición
             modal.classList.remove('opacity-100');
             modal.classList.add('opacity-0');
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-            }, 300); // Espera a que termine la animación de opacidad
+            }, 300);
         }
 
         window.onload = cargarDatos;
     </script>
+    <?php include 'footer_publico.php'; ?>
 </body>
 </html>

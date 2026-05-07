@@ -111,5 +111,6 @@ $registros = SeguimientoRegistro::orderBy('created_at', 'desc')->get();
 
         </div>
     </main>
+    <?php include 'footer_publico.php'; ?>
 </body>
 </html>

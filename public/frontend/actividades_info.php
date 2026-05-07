@@ -208,5 +208,6 @@
 
         document.addEventListener('DOMContentLoaded', cargarActividades);
     </script>
+    <?php include 'footer_publico.php'; ?>
 </body>
 </html>

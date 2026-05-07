@@ -80,11 +80,15 @@
                         <div style="display: flex; gap: 10px; font-size: 0.8rem;">
                             @if($informe->pdf_contexto)
                               <a href="/storage/documentos/{{ $informe->pdf_contexto }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Contexto</a>
+                            @endif 
+                            
                             @if($informe->pdf_anexo1)
                                 <a href="/storage/documentos/{{ $informe->pdf_anexo1 }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 1</a>
                             @endif
+                            
                             @if($informe->pdf_anexo2)
                                 <a href="/storage/documentos/{{ $informe->pdf_anexo2 }}" target="_blank" style="color: #0d6efd; text-decoration: none;"><i class="bi bi-paperclip"></i> Anexo 2</a>
+                            @endif
                         </div>
                     </div>
 

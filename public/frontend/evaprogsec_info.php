@@ -176,5 +176,6 @@
 
         document.addEventListener('DOMContentLoaded', cargarEvaluacionesSectoriales);
     </script>
+    <?php include 'footer_publico.php'; ?>
 </body>
 </html>
