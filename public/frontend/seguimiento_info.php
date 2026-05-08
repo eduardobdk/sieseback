@@ -61,7 +61,7 @@ $registros = SeguimientoRegistro::orderBy('created_at', 'desc')->get();
             </h2>
             <div class="max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
-                    <?php echo nl2br(htmlspecialchars($info->descripcion)); ?>
+                    <?php echo $info->descripcion; ?>
                 </p>
             </div>
         </header>

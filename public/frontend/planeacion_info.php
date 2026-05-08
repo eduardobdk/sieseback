@@ -117,9 +117,9 @@ $documentos = PlaneacionDocumento::orderBy('created_at', 'desc')->get();
                 SISTEMA DE <span style="color: var(--guinda-chiapas);">PLANEACIÓN</span>
             </h2>
             <div class="max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-                <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
-                    <?php echo nl2br(htmlspecialchars($info->descripcion)); ?>
-                </p>
+            <div class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
+                    <?php echo $info->descripcion; ?>
+                        </p>
                 <div class="pt-6 border-t border-slate-100">
                     <p class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] italic">
                         Consulte a continuación los documentos técnicos y normativos disponibles para su descarga:

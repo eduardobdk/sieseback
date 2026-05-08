@@ -16,7 +16,7 @@
             @csrf
             <div class="grupo-input">
                 <label>Contenido del bloque (Texto de introducción):</label>
-                <textarea name="descripcion" class="input-form area-texto" rows="5" required>{{ $info->descripcion ?? '' }}</textarea>
+                <textarea name="descripcion" id="editor-informes" class="input-form area-texto" rows="5" required>{{ $informe->descripcion ?? '' }}</textarea>
             </div>
             <div class="caja-botones">
                 <button type="submit" class="btn-gob btn-guardar"><i class="bi bi-floppy"></i> Guardar Texto</button>
@@ -104,4 +104,12 @@
             @endforelse
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.1/ckeditor.js"></script>
+<script>
+    window.addEventListener('load', function() {
+        if(typeof CKEDITOR !== 'undefined') {
+            CKEDITOR.replace('editor-informes');
+        }
+    });
+</script>
 @endsection

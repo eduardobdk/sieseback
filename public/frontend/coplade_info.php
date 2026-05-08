@@ -133,8 +133,8 @@
                 document.getElementById('dyn-titulo-overlay').innerText = data.bienvenida.titulo;
                 document.getElementById('dyn-titulo-main').innerText = data.bienvenida.titulo;
                 document.getElementById('dyn-subtitulo').innerText = data.bienvenida.subtitulo;
-                document.getElementById('dyn-descripcion-overlay').innerText = `"${data.bienvenida.descripcion}"`;
-                document.getElementById('dyn-descripcion-main').innerText = data.bienvenida.descripcion;
+                document.getElementById('dyn-descripcion-overlay').innerHTML = data.bienvenida.descripcion;
+                document.getElementById('dyn-descripcion-main').innerHTML = data.bienvenida.descripcion;
 
                 // 2. Manejar Sesiones
                 const tabsContainer = document.getElementById('dyn-tabs');

@@ -317,6 +317,5 @@
 }
     
 </style>
-<?php include 'footer_publico.php'; ?>
 </body>
 </html>

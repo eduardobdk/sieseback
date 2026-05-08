@@ -30,7 +30,7 @@
             </div>
             <div class="grupo-input">
                 <label>Descripción:</label>
-                <textarea name="descripcion" class="input-form area-texto" rows="3" required>{{ $bienvenida->descripcion ?? '' }}</textarea>
+                <textarea name="descripcion" id="editor-bienvenida" class="input-form area-texto" rows="3" required>{{ $bienvenida->descripcion ?? '' }}</textarea>
             </div>
             <div class="caja-botones mt-3">
                 <button type="submit" class="btn-gob btn-guardar"><i class="bi bi-floppy"></i> Actualizar Bienvenida</button>
@@ -139,12 +139,12 @@
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.1/ckeditor.js"></script>
-    <script>
-        // Le decimos que espere a que cargue la página y luego aplique el editor
-        window.addEventListener('load', function() {
-            if(typeof CKEDITOR !== 'undefined') {
-                CKEDITOR.replace('editor-nueva-sesion');
-            }
-        });
-    </script>
+<script>
+    window.addEventListener('load', function() {
+        if(typeof CKEDITOR !== 'undefined') {
+            CKEDITOR.replace('editor-nueva-sesion'); // El que ya tenías
+            CKEDITOR.replace('editor-bienvenida');   // ¡El nuevo que acabamos de agregar!
+        }
+    });
+</script>
 @endsection

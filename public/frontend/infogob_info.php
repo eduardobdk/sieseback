@@ -108,7 +108,7 @@ $informes = Informe::latest()->get();
             </h2>
             <div class="max-w-5xl mx-auto bg-white p-10 md:p-14 rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <p class="text-slate-600 text-sm md:text-base leading-relaxed text-justify font-medium">
-                    <?= $info ? e($info->descripcion) : 'Documentos que detallan el estado de la Administración Pública Estatal...' ?>
+                    <?php echo $info->descripcion; ?>
                 </p>
             </div>
         </header>
